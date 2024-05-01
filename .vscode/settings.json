@@ -1,0 +1,12 @@
+{
+    "files.associations": {
+        "gpio.h": "c",
+        "main.h": "c",
+        "dma.h": "c",
+        "motor.h": "c",
+        "tim.h": "c",
+        "usart.h": "c",
+        "control.h": "c",
+        "oled.h": "c"
+    }
+}

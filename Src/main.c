@@ -41,7 +41,7 @@ uint8_t Date[10] = {0}; //接收数组
 
 uint8_t state1 = 0;   //串口状�??
 
-uint16_t Date1[10] = {0}; //接收数组
+uint8_t Date1[20] = {0}; //接收数组
 
 uint16_t shuliang = 0;   //数字个数
 
@@ -166,7 +166,7 @@ int main(void)
 	for(i=0;i<10;i++)
 	{
   uart_it_init(&huart1,1);
-	uart_it_init(&huart3,2);
+	uart_it_init(&huart3,1);
 	HAL_Delay(10);
 	}
 	__HAL_TIM_SetCompare(&htim15,TIM_CHANNEL_1,angle+50);
@@ -249,17 +249,17 @@ int main(void)
 			ex_room =2;
 		}
 		
-		if(shuliang!=0&&statue == 0&&direction == 0&&T_num !=1&&T_num !=2&&(vvvvv-HAL_GetTick())>2000)  //如果数字数量不为0  且为前往状态
+		if(shuliang!=0&&statue == 0&&direction == 0&&T_num !=1&&T_num !=2&&(vvvvv-HAL_GetTick())>2000)  //如果数字数量不为0  且为前往状态  
 		{
 			vvvvv = HAL_GetTick();
 			if(number[0] == T_num)
 			{
-					ex_fork++;  //期望岔口为下一个
+					ex_fork=fork +1;  //期望岔口为下一个
   				ex_room=1;
 			}
 			else if(number[1] == T_num)
 			{
-					ex_fork++;  //期望岔口为下一个
+					ex_fork=fork +1;  //期望岔口为下一个
 					ex_room=2;
 			}			
 			direction = 0;
@@ -284,7 +284,6 @@ int main(void)
 //				
 //				
 //			}
-			
 		}
 		
 		
@@ -320,15 +319,20 @@ int main(void)
 		if(width >100&&statue == 1&&color ==0&&(HAL_GetTick() - vvvvvv)>2000)   //如果返回过程到达岔口
 		{
 			vvvvvv = HAL_GetTick();
+			if(ex_fork==3&&ex_fork==4||fork==ex_fork)
+			{
+				if(ex_room ==1)
+				{
+					direction = 'L';  
+				}
+				if(ex_room == 2)
+				{
+					direction = 'R';
+				}				
+			}
+			
 			fork--;
-			if(ex_room ==1)
-			{
-				direction = 'L';  
-			}
-			if(ex_room == 2)
-			{
-				direction = 'R';
-			}
+
 		}
 		
 		if(color == 1)  //如果到达终点

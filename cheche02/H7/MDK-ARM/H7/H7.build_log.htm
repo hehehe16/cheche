@@ -1,0 +1,115 @@
+<html>
+<body>
+<pre>
+<h1>µVision Build Log</h1>
+<h2>Tool Versions:</h2>
+IDE-Version: ¦ÌVision V5.38.0.0
+Copyright (C) 2022 ARM Ltd and ARM Germany GmbH. All rights reserved.
+License Information: 1 a2644423922@outlook.com, 1, LIC=JL28G-V2H1G-BS5YX-HPJPH-YRS7Y-UKXV8
+ 
+Tool Versions:
+Toolchain:       MDK-ARM Plus  Version: 5.38.0.0
+Toolchain Path:  D:\tool\Kile\ARM\ARMCLANG\Bin
+C Compiler:      ArmClang.exe V6.19
+Assembler:       Armasm.exe V6.19
+Linker/Locator:  ArmLink.exe V6.19
+Library Manager: ArmAr.exe V6.19
+Hex Converter:   FromElf.exe V6.19
+CPU DLL:         SARMCM3.DLL V5.38.0.0
+Dialog DLL:      DCM.DLL V1.17.5.0
+Target DLL:      CMSIS_AGDI.dll V1.33.15.0
+Dialog DLL:      TCM.DLL V1.56.4.0
+ 
+<h2>Project:</h2>
+D:\project\ACM_K\H7\MDK-ARM\H7.uvprojx
+Project File Date:  05/02/2024
+
+<h2>Output:</h2>
+*** Using Compiler 'V6.19', folder: 'D:\tool\Kile\ARM\ARMCLANG\Bin'
+Build target 'H7'
+../Src/main.c(32): warning: In file included from...
+../9250/DMP/driver/eMPL\inv_mpu.h(139): warning: redefinition of typedef 'u8' is a C11 feature [-Wtypedef-redefinition]
+typedef uint8_t u8;
+                ^
+../9250/MPU9250\mpu9250.h(107): note: previous definition is here
+typedef uint8_t u8;
+                ^
+../Src/main.c(32): warning: In file included from...
+../9250/DMP/driver/eMPL\inv_mpu.h(140): warning: redefinition of typedef 'u16' is a C11 feature [-Wtypedef-redefinition]
+typedef uint16_t u16;
+                 ^
+../9250/MPU9250\mpu9250.h(108): note: previous definition is here
+typedef uint16_t u16;
+                 ^
+2 warnings generated.
+compiling main.c...
+../9250/DMP/driver/eMPL/inv_mpu.c(28): warning: In file included from...
+../9250/DMP/mpl\invensense_adv.h(21): warning: In file included from...
+../9250/DMP/mpl/gyro_tc.h(14): warning: '_GYRO_TC_H' is used as a header guard here, followed by #define of a different macro [-Wheader-guard]
+#ifndef _GYRO_TC_H
+        ^~~~~~~~~~
+../9250/DMP/mpl/gyro_tc.h(15): note: '_GYRO_TC_H_' is defined here; did you mean '_GYRO_TC_H'?
+#define _GYRO_TC_H_
+        ^~~~~~~~~~~
+        _GYRO_TC_H
+../9250/DMP/driver/eMPL/inv_mpu.c(36): warning: In file included from...
+../9250/MPU9250\mpu9250.h(107): warning: redefinition of typedef 'u8' is a C11 feature [-Wtypedef-redefinition]
+typedef uint8_t u8;
+                ^
+../9250/DMP/driver/eMPL/inv_mpu.h(139): note: previous definition is here
+typedef uint8_t u8;
+                ^
+../9250/DMP/driver/eMPL/inv_mpu.c(36): warning: In file included from...
+../9250/MPU9250\mpu9250.h(108): warning: redefinition of typedef 'u16' is a C11 feature [-Wtypedef-redefinition]
+typedef uint16_t u16;
+                 ^
+../9250/DMP/driver/eMPL/inv_mpu.h(140): note: previous definition is here
+typedef uint16_t u16;
+                 ^
+../9250/DMP/driver/eMPL/inv_mpu.c(2319): warning: using floating point absolute value function 'fabs' when argument is of integer type [-Wabsolute-value]
+                        if(fabs(bias_regular[i]) > accel_offset_max) {
+                           ^
+../9250/DMP/driver/eMPL/inv_mpu.c(2319): note: use function 'labs' instead
+                        if(fabs(bias_regular[i]) > accel_offset_max) {
+                           ^~~~
+                           labs
+../9250/DMP/driver/eMPL/inv_mpu.c(2413): warning: using floating point absolute value function 'fabs' when argument is of integer type [-Wabsolute-value]
+                        if(fabs(bias_regular[i]) > gyro_offset_max) {
+                           ^
+../9250/DMP/driver/eMPL/inv_mpu.c(2413): note: use function 'labs' instead
+                        if(fabs(bias_regular[i]) > gyro_offset_max) {
+                           ^~~~
+                           labs
+5 warnings generated.
+compiling inv_mpu.c...
+linking...
+Program Size: Code=74080 RO-data=7852 RW-data=148 ZI-data=7252  
+FromELF: creating hex file...
+"H7\H7.axf" - 0 Error(s), 7 Warning(s).
+
+<h2>Software Packages used:</h2>
+
+Package Vendor: ARM
+                http://www.keil.com/pack/ARM.CMSIS.5.9.0.pack
+                ARM.CMSIS.5.9.0
+                CMSIS (Common Microcontroller Software Interface Standard)
+   * Component: CORE Version: 5.6.0
+
+Package Vendor: Keil
+                https://www.keil.com/pack/Keil.STM32H7xx_DFP.3.1.1.pack
+                Keil.STM32H7xx_DFP.3.1.1
+                STMicroelectronics STM32H7 Series Device Support and Examples
+
+<h2>Collection of Component include folders:</h2>
+  ./RTE/_H7
+  D:/tool/Kile/ARM/CMSIS/5.9.0/CMSIS/Core/Include
+  D:/tool/Kile/Keil/STM32H7xx_DFP/3.1.1/Drivers/CMSIS/Device/ST/STM32H7xx/Include
+
+<h2>Collection of Component Files used:</h2>
+
+   * Component: ARM::CMSIS:CORE:5.6.0
+      Include file:  CMSIS/Core/Include/tz_context.h
+Build Time Elapsed:  00:00:03
+</pre>
+</body>
+</html>

@@ -23,13 +23,59 @@
 #include "usart.h"
 #include "gpio.h"
 
-
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "oled.h"
 #include "stdio.h"
-#include "mpu9250.h"
+#include "mpu6050.h"
 #include "inv_mpu.h"
+#include "motor.h"
+#include "control.h"
+#include "uart_it.h"
+
+
+uint8_t angle=150;   //90  120
+
+uint8_t state = 0;   //串口状???
+
+uint8_t Date[10] = {0}; //接收数组
+
+uint8_t state1 = 0;   //串口状???
+
+uint8_t Date1[20] = {0}; //接收数组
+
+uint16_t shuliang = 0;   //数字个数
+
+uint16_t number[4] = {0};
+
+uint8_t tick = 0;      
+uint8_t ticks =0;
+
+
+
+uint8_t rx_v831[6]={0};
+uint8_t jiaoyan;
+uint8_t num_A=1,num_B=2;
+uint8_t rx_n_num=0;
+uint8_t sig_num=0;
+
+
+uint8_t fangjian_zhong[2]={0};
+uint8_t fangjianA[2]={0};
+uint8_t fangjianB[2]={0};
+uint8_t fangjianA_AB[2]={0};
+uint8_t fangjianB_AB[2]={0};
+int chakou=0,fchakou=0;
+uint8_t ji=1;
+uint8_t T_num=0;
+
+uint64_t st=0,ff_s=0,f_st=0;
+uint8_t zhuangtai=1;//1?? 0???
+char zhuanwan[4]={0}; 
+int ttttt=0;
+int statue = 0; //车的行进阶段 0：前往 1：返回
+
+char direction = 1;  //运动状态  0：正常行进 1：停止 ‘L’：左转90度，然后正常行进 ‘R’：   
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -44,57 +90,6 @@
 
 /* Private macro -------------------------------------------------------------*/
 /* USER CODE BEGIN PM */
-void dianjiA(int s)
-{
-	s=-s;
-		if(s>200)
-		{
-			HAL_GPIO_WritePin(GPIOE, GPIO_PIN_14, GPIO_PIN_SET); 
-			HAL_GPIO_WritePin(GPIOE, GPIO_PIN_15, GPIO_PIN_RESET); 
-			__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, s);
-		}
-		
-		else if(s<-200)
-		{
-			HAL_GPIO_WritePin(GPIOE, GPIO_PIN_14, GPIO_PIN_RESET); 
-			HAL_GPIO_WritePin(GPIOE, GPIO_PIN_15, GPIO_PIN_SET); 
-			__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, -s);
-		}
-		
-		else
-		{
-			HAL_GPIO_WritePin(GPIOE, GPIO_PIN_14, GPIO_PIN_SET); 
-			HAL_GPIO_WritePin(GPIOE, GPIO_PIN_15, GPIO_PIN_SET); 
-			__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, 9999);
-		}
-		
-}
-void dianjiB(int s)
-{
-	s=-s;
-		if(s>200)
-		{
-			HAL_GPIO_WritePin(GPIOB, GPIO_PIN_13, GPIO_PIN_SET); 
-			HAL_GPIO_WritePin(GPIOB, GPIO_PIN_12, GPIO_PIN_RESET); 
-			__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_2, s);
-		}
-		
-		else if(s<-200)
-		{
-			HAL_GPIO_WritePin(GPIOB, GPIO_PIN_13, GPIO_PIN_RESET); 
-			HAL_GPIO_WritePin(GPIOB, GPIO_PIN_12, GPIO_PIN_SET); 
-			__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_2, -s);
-		}
-		
-		else
-		{
-			HAL_GPIO_WritePin(GPIOB, GPIO_PIN_13, GPIO_PIN_SET); 
-			HAL_GPIO_WritePin(GPIOB, GPIO_PIN_12, GPIO_PIN_SET); 
-			__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_2, 9999);
-		}
-		
-}
-
 
 /* USER CODE END PM */
 
@@ -154,28 +149,49 @@ int main(void)
   MX_TIM4_Init();
   MX_USART2_UART_Init();
   MX_I2C3_Init();
+  MX_TIM5_Init();
+  MX_USART1_UART_Init();
+  MX_USART6_UART_Init();
   /* USER CODE BEGIN 2 */
 	OLED_Init();
 	OLED_FullyClear();
 	
+	HAL_Delay(200);
 	
 	HAL_GPIO_TogglePin(GPIOC,GPIO_PIN_10);
 	
-	
+	HAL_Delay(200);
 	HAL_TIM_Encoder_Start(&htim3,TIM_CHANNEL_1|TIM_CHANNEL_2);
 	HAL_TIM_Encoder_Start(&htim4,TIM_CHANNEL_1|TIM_CHANNEL_2);
-	float x,y,z;
+//	float x,y,z;
 	HAL_TIM_PWM_Start(&htim2,TIM_CHANNEL_1);
 	HAL_TIM_PWM_Start(&htim2,TIM_CHANNEL_2);
 	dianjiA(3000);
 	dianjiB(3000);
-//	while(MPU9250_Init()){HAL_Delay(10);}
-while(mpu_dmp_init()){}
-
+	;
+  motor_init();
+	int i=0;
 	
-	OLED_FullyClear();
-//	while(MPU_Init()){HAL_Delay(10);}
-//	while(mpu_dmp_init()){HAL_Delay(10);}
+	int fork = 0; //第几个岔口
+	int ex_fork =0; //期望岔口
+	int ex_room =0;  //期望房间，1：左，2：右
+	int color =0; //当前胶带颜色
+	
+	int v = 0;
+	int vv = 0;
+	int vvv=0;
+	int vvvv = HAL_GetTick();
+	int vvvvv = HAL_GetTick();
+	int vvvvvv = HAL_GetTick();
+	for(i=0;i<10;i++)
+	{
+  uart_it_init(&huart1,1);
+	uart_it_init(&huart6,1);
+	HAL_Delay(10);
+	}
+	HAL_TIM_Base_Start_IT(&htim3);
+	HAL_TIM_Base_Start_IT(&htim4);
+	HAL_TIM_Base_Start_IT(&htim5);
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -188,36 +204,36 @@ while(mpu_dmp_init()){}
 		
 	
 		{
-		//以下为测试内容，不用时请注释或删除
-			
-		//OLED测试
-			{
-				OLED_ShowStr1(0,0,TIM3->CNT,5,16);
-				OLED_ShowStr1(64,0,TIM4->CNT,5,16);	
-				OLED_ShowStr1(0,3,(int)x,3,16);
-				OLED_ShowStr1(44,3,(int)y,3,16);
-				OLED_ShowStr1(88,3,(int)z,3,16);
-			}
-		
-		
-		//按键
-		//灯光测试
-			if(HAL_GPIO_ReadPin(GPIOC,GPIO_PIN_4))
-			{
-					HAL_GPIO_TogglePin(GPIOD,GPIO_PIN_10);
-			}
-			if(HAL_GPIO_ReadPin(GPIOB,GPIO_PIN_0))
-			{
-					HAL_GPIO_TogglePin(GPIOD,GPIO_PIN_9);
-			}
-			if(HAL_GPIO_ReadPin(GPIOB,GPIO_PIN_2))
-			{
-					HAL_GPIO_TogglePin(GPIOD,GPIO_PIN_8);
-			}
-			
-			
-			mpu_mpl_get_data(&x,&y,&z);
-			
+//		//以下为测试内容，不用时请注释或删除
+//			
+//		//OLED测试
+//			{
+//				OLED_ShowStr1(0,0,TIM3->CNT,5,16);
+//				OLED_ShowStr1(64,0,TIM4->CNT,5,16);	
+//				OLED_ShowStr1(0,3,(int)x,3,16);
+//				OLED_ShowStr1(44,3,(int)y,3,16);
+//				OLED_ShowStr1(88,3,(int)z,3,16);
+//			}
+//		
+//		
+//		//按键
+//		//灯光测试
+//			if(HAL_GPIO_ReadPin(GPIOC,GPIO_PIN_4))
+//			{
+//					HAL_GPIO_TogglePin(GPIOD,GPIO_PIN_10);
+//			}
+//			if(HAL_GPIO_ReadPin(GPIOB,GPIO_PIN_0))
+//			{
+//					HAL_GPIO_TogglePin(GPIOD,GPIO_PIN_9);
+//			}
+//			if(HAL_GPIO_ReadPin(GPIOB,GPIO_PIN_2))
+//			{
+//					HAL_GPIO_TogglePin(GPIOD,GPIO_PIN_8);
+//			}
+//			
+//			
+//			
+//			
 		//蓝牙usart2 9600波特率 打印
 				//printf("%f,%f,%f\n",x,y,z);
 		
@@ -228,6 +244,175 @@ while(mpu_dmp_init()){}
 
 
 	//HAL_Delay(20);
+	
+	 if (state == 1)    //串口1接收完毕,等待处理
+    {
+      width =Date[0];
+      now = Date[1]; 
+			color = Date[2];
+      state = 0; 
+    }										//
+		if(state1 == 1)    //串口3接收完毕,等待处理
+    {
+			shuliang = Date1[0]; //数字个数
+			if(shuliang == 1)
+			{
+				number[0]  = Date1[1];
+			}
+			else if(shuliang == 2)
+			{
+				if(Date1[2]<Date1[4]) //如果1号数字x小于2号数字
+				{
+					number[0]  = Date1[1];
+					number[1]  = Date1[3];
+				}
+				else
+				{
+					
+					number[0]  = Date1[3];
+					number[1]  = Date1[1];
+				}
+			}  
+			else
+			{
+				number[0] = 0;
+			}
+      state1 = 0; 
+    }										//
+		
+		
+//		while(HAL_GPIO_ReadPin(GPIOE,GPIO_PIN_11)==0) //按键检测
+//		{
+//			T_num=number[0];
+//		}                                            //
+		
+		if(HAL_GPIO_ReadPin(GPIOE,GPIO_PIN_3)==0)			//红外检测
+		{
+			if(HAL_GetTick()-ff_s>1000&&vv==0)
+			{
+				vv=1;
+					direction = 0;																///判定成功
+			}
+		}
+		else
+		{
+			ff_s=HAL_GetTick();
+		}																					//
+		
+    /* USER CODE END WHILE */
+
+    /* USER CODE BEGIN 3 */
+		if(T_num ==1) 
+		{
+			ex_fork = 1;
+			ex_room =1;
+		}
+		if(T_num ==2) 
+		{
+			ex_fork =1;
+			ex_room =2;
+		}
+		
+		if(shuliang!=0&&statue == 0&&direction == 0&&T_num !=1&&T_num !=2&&(vvvvv-HAL_GetTick())>2000)  //如果数字数量不为0  且为前往状态  
+		{
+			vvvvv = HAL_GetTick();
+			if(number[0] == T_num)
+			{
+					ex_fork=fork +1;  //期望岔口为下一个
+  				ex_room=1;
+			}
+			else if(number[1] == T_num)
+			{
+					ex_fork=fork +1;  //期望岔口为下一个
+					ex_room=2;
+			}			
+			direction = 0;
+//			direction = 1;  //先停下来
+//				Tv_A = 0;
+//        Tv_B = 0;
+//			HAL_Delay(1000);
+//			if(number[0] == T_num)  //左边数字
+//			{
+//				ex_fork++;  //期望岔口为下一个
+//				ex_room=1;
+//			}
+//			else
+//			{
+//				__HAL_TIM_SetCompare(&htim15,TIM_CHANNEL_1,140); //转到另一边
+//				HAL_Delay(1000);
+//				if(Date1[1] ==T_num)
+//				{
+//					ex_fork++;  //期望岔口为下一个
+//					ex_room=2;
+//				}
+//				
+//				
+//			}
+		}
+		
+		
+		
+		
+		
+		if(width >100&&statue == 0&&color ==0)		//如果前往过程到达岔口
+		{
+			
+			direction = 1;
+			if((HAL_GetTick()-vvvv)>1000)
+			{
+				vvvv =HAL_GetTick();
+				
+				fork++;        ///当前岔口加一
+			}
+			
+			
+
+			if(fork == ex_fork)  ///如果是期望岔口
+			{
+				if(ex_room ==1)
+				{
+					direction = 'L';  
+				}
+				if(ex_room == 2)
+				{
+					direction = 'R';
+				}
+			}
+		}									//
+		
+		if(width >100&&statue == 1&&color ==0&&(HAL_GetTick() - vvvvvv)>2000)   //如果返回过程到达岔口
+		{
+			vvvvvv = HAL_GetTick();
+			if(ex_fork==3&&ex_fork==4||fork==ex_fork)
+			{
+				if(ex_room ==1)
+				{
+					direction = 'L';  
+				}
+				if(ex_room == 2)
+				{
+					direction = 'R';
+				}				
+			}
+			
+			fork--;
+
+		}
+		
+		if(color == 1)  //如果到达终点
+		{
+			direction =1;
+			
+			if(HAL_GPIO_ReadPin(GPIOE,GPIO_PIN_3)!=0) //如果拿开药
+			{
+				statue = 1;  //返回状态
+				direction = 2;  //倒退
+			}
+		}               //
+		OLED_ShowStr1(0, 3, (int)v_B, 4, 16);
+		
+    OLED_ShowStr1(0, 1, (int)v_A, 4, 16);
+	
   }
 	
   /* USER CODE END 3 */
@@ -302,6 +487,88 @@ int fputc(int ch, FILE *f)
 	HAL_UART_Transmit(&huart2, (uint8_t *)&ch, 1, 0xffff);
 	return ch;
 }
+//蓝牙重定向
+
+
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
+{
+	
+  if(huart == &huart1)
+  {
+		uart_it_receive(&huart1,Date,&state);
+  }
+	
+  
+	else if(huart == &huart6)
+  {
+		uart_it_receive1(&huart6,Date1,&state1);
+  }
+}
+
+
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
+{
+
+  if (htim == &htim3)
+  {
+    ceh_A++;   //tim1计数溢出
+  }
+
+  if (htim == &htim4)
+  {
+    ceh_B++;  //tim8计数溢出
+  }
+
+	
+  if (htim == &htim5)
+  {
+		
+    motor_handle();   //速度pid控制
+
+    
+    if (tick == 5)
+    {
+      if (direction == 0)
+      {
+				
+					line_pid(100, &Tv_A, &Tv_B);   		
+      }
+      
+			else if(direction ==1)
+			{
+				Tv_A = 0;
+        Tv_B = 0;
+				
+			}
+			else if(direction ==2)
+			{
+				Tv_A = -40;
+        Tv_B = -40;
+			}
+			else
+      {
+        turn(direction);    //转向
+        
+        if(ticks >= 70)      //转向时间
+        {
+          direction = 0;
+          ticks = 0;
+        }
+        else
+        {
+          ticks++;
+        }
+      }
+    }
+    else
+    {
+      tick++;
+    }
+  }
+}
+
+
+
 
 /* USER CODE END 4 */
 

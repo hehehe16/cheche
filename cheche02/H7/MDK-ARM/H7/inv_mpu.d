@@ -1,10 +1,10 @@
-h7/inv_mpu.o: ..\9250\DMP\driver\eMPL\inv_mpu.c \
+h7/inv_mpu.o: ..\MPU6050\MPU6050\eMPL\inv_mpu.c \
   D:\tool\Kile\ARM\ARMCLANG\Bin\..\include\stdio.h \
   D:\tool\Kile\ARM\ARMCLANG\Bin\..\include\stdint.h \
   D:\tool\Kile\ARM\ARMCLANG\Bin\..\include\stdlib.h \
   D:\tool\Kile\ARM\ARMCLANG\Bin\..\include\string.h \
   D:\tool\Kile\ARM\ARMCLANG\Bin\..\include\math.h \
-  ..\9250\DMP\driver\eMPL\inv_mpu.h ..\Inc\main.h \
+  ..\MPU6050\MPU6050\eMPL\inv_mpu.h ..\Inc\main.h \
   ..\Drivers\STM32H7xx_HAL_Driver\Inc\stm32h7xx_hal.h \
   ..\Inc\stm32h7xx_hal_conf.h \
   ..\Drivers\STM32H7xx_HAL_Driver\Inc\stm32h7xx_hal_rcc.h \
@@ -40,24 +40,5 @@ h7/inv_mpu.o: ..\9250\DMP\driver\eMPL\inv_mpu.c \
   ..\Drivers\STM32H7xx_HAL_Driver\Inc\stm32h7xx_hal_tim_ex.h \
   ..\Drivers\STM32H7xx_HAL_Driver\Inc\stm32h7xx_hal_uart.h \
   ..\Drivers\STM32H7xx_HAL_Driver\Inc\stm32h7xx_hal_uart_ex.h \
-  ..\9250\DMP\mllite\mpl.h ..\9250\DMP\driver\include\mltypes.h \
-  ..\9250\DMP\driver\include\stdint_invensense.h \
-  D:\tool\Kile\ARM\ARMCLANG\Bin\..\include\errno.h \
-  D:\tool\Kile\ARM\ARMCLANG\Bin\..\include\limits.h \
-  ..\9250\DMP\mllite\invensense.h ..\9250\DMP\mllite\data_builder.h \
-  ..\9250\DMP\mllite\hal_outputs.h ..\9250\DMP\mllite\message_layer.h \
-  ..\9250\DMP\driver\include\mlmath.h ..\9250\DMP\mllite\ml_math_func.h \
-  ..\9250\DMP\mllite\results_holder.h ..\9250\DMP\mllite\start_manager.h \
-  ..\9250\DMP\mllite\storage_manager.h ..\9250\DMP\driver\include\log.h \
-  D:\tool\Kile\ARM\ARMCLANG\Bin\..\include\stdarg.h \
-  ..\9250\DMP\driver\include\mlinclude.h \
-  ..\9250\DMP\mpl\invensense_adv.h ..\9250\DMP\mpl\accel_auto_cal.h \
-  ..\9250\DMP\mpl\compass_vec_cal.h ..\9250\DMP\mpl\fast_no_motion.h \
-  ..\9250\DMP\mpl\fusion_9axis.h ..\9250\DMP\mpl\gyro_tc.h \
-  ..\9250\DMP\mpl\heading_from_gyro.h ..\9250\DMP\mpl\mag_disturb.h \
-  ..\9250\DMP\mpl\motion_no_motion.h ..\9250\DMP\mpl\no_gyro_fusion.h \
-  ..\9250\DMP\mpl\quaternion_supervisor.h \
-  ..\9250\DMP\eMPL-hal\eMPL_outputs.h ..\9250\DMP\driver\include\mpu.h \
-  ..\9250\DMP\driver\stm32L\packet.h \
-  ..\9250\DMP\driver\eMPL\inv_mpu_dmp_motion_driver.h \
-  ..\9250\MPU9250\mpu9250.h
+  ..\MPU6050\MPU6050\eMPL\inv_mpu_dmp_motion_driver.h \
+  ..\MPU6050\MPU6050\mpu6050.h ..\Inc\i2c.h ..\Inc\usart.h

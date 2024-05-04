@@ -1,4 +1,4 @@
-h7/main.o: ..\Src\main.c ..\Inc\main.h \
+h7/motor.o: ..\user\motor.c ..\user\motor.h ..\Inc\main.h \
   ..\Drivers\STM32H7xx_HAL_Driver\Inc\stm32h7xx_hal.h \
   ..\Inc\stm32h7xx_hal_conf.h \
   ..\Drivers\STM32H7xx_HAL_Driver\Inc\stm32h7xx_hal_rcc.h \
@@ -36,7 +36,4 @@ h7/main.o: ..\Src\main.c ..\Inc\main.h \
   ..\Drivers\STM32H7xx_HAL_Driver\Inc\stm32h7xx_hal_tim_ex.h \
   ..\Drivers\STM32H7xx_HAL_Driver\Inc\stm32h7xx_hal_uart.h \
   ..\Drivers\STM32H7xx_HAL_Driver\Inc\stm32h7xx_hal_uart_ex.h \
-  ..\Inc\i2c.h ..\Inc\tim.h ..\Inc\usart.h ..\Inc\gpio.h ..\oled\oled.h \
-  D:\tool\Kile\ARM\ARMCLANG\Bin\..\include\stdio.h \
-  ..\MPU6050\MPU6050\mpu6050.h ..\MPU6050\MPU6050\eMPL\inv_mpu.h \
-  ..\user\motor.h ..\user\control.h ..\user\uart_it.h
+  ..\Inc\tim.h ..\Inc\gpio.h

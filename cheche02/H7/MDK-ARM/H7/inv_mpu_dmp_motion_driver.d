@@ -1,11 +1,11 @@
 h7/inv_mpu_dmp_motion_driver.o: \
-  ..\9250\DMP\driver\eMPL\inv_mpu_dmp_motion_driver.c \
+  ..\MPU6050\MPU6050\eMPL\inv_mpu_dmp_motion_driver.c \
   D:\tool\Kile\ARM\ARMCLANG\Bin\..\include\stdio.h \
   D:\tool\Kile\ARM\ARMCLANG\Bin\..\include\stdint.h \
   D:\tool\Kile\ARM\ARMCLANG\Bin\..\include\stdlib.h \
   D:\tool\Kile\ARM\ARMCLANG\Bin\..\include\string.h \
   D:\tool\Kile\ARM\ARMCLANG\Bin\..\include\math.h \
-  ..\9250\DMP\driver\eMPL\inv_mpu.h ..\Inc\main.h \
+  ..\MPU6050\MPU6050\eMPL\inv_mpu.h ..\Inc\main.h \
   ..\Drivers\STM32H7xx_HAL_Driver\Inc\stm32h7xx_hal.h \
   ..\Inc\stm32h7xx_hal_conf.h \
   ..\Drivers\STM32H7xx_HAL_Driver\Inc\stm32h7xx_hal_rcc.h \
@@ -41,6 +41,6 @@ h7/inv_mpu_dmp_motion_driver.o: \
   ..\Drivers\STM32H7xx_HAL_Driver\Inc\stm32h7xx_hal_tim_ex.h \
   ..\Drivers\STM32H7xx_HAL_Driver\Inc\stm32h7xx_hal_uart.h \
   ..\Drivers\STM32H7xx_HAL_Driver\Inc\stm32h7xx_hal_uart_ex.h \
-  ..\9250\DMP\driver\eMPL\inv_mpu_dmp_motion_driver.h \
-  ..\9250\DMP\driver\eMPL\dmpKey.h ..\9250\DMP\driver\eMPL\dmpmap.h \
-  ..\9250\MPU9250\mpu9250.h
+  ..\MPU6050\MPU6050\eMPL\inv_mpu_dmp_motion_driver.h \
+  ..\MPU6050\MPU6050\eMPL\dmpKey.h ..\MPU6050\MPU6050\eMPL\dmpmap.h \
+  ..\Inc\usart.h

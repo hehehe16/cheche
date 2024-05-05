@@ -45,10 +45,11 @@ uint8_t Date1[20] = {0}; //接收数组
 
 uint16_t shuliang = 0;   //数字个数
 
-uint16_t number[4] = {0};
+int number[4] = {0};
 
 uint8_t tick = 0;      
 int ticks =0;
+int ticksss=0;
 int color =0; //当前胶带颜色
 
 
@@ -83,6 +84,26 @@ char direction = 1;  //运动状态  0：正常行进 1：停止 ‘L’：左�
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
+void sort(int b[],int a[],int len)
+{
+	int temp[2];
+	for(int i=0;i<len-1;i++)
+	{
+		for(int n=i+1;n<len;n++)
+		{
+			temp[0] = a[i];
+			temp[1] = b[i];
+			if(a[n]<a[i])
+			{
+				b[i] = b[n];
+				b[n]= temp[1];
+				a[i] = a[n];
+				a[n] = temp[0];
+			}
+		}
+	}
+}
+
 
 /* USER CODE END PD */
 
@@ -169,6 +190,10 @@ int main(void)
 	int vvvvv = HAL_GetTick();
 	int vvvvvv = HAL_GetTick();
 	int vvvvvvv = HAL_GetTick();
+	int vvvvvvvv = 0;
+	char dir;
+	int num_shu[4] = {0};
+	
 	for(i=0;i<10;i++)
 	{
   uart_it_init(&huart1,1);
@@ -208,28 +233,49 @@ int main(void)
 			if(shuliang == 1)
 			{
 				number[0]  = Date1[1];
+				number[1] = 0;
+				number[2] = 0;
+				number[3] = 0;
 			}
-			else if(shuliang == 2)
+//			else if(shuliang == 2)
+//			{
+//				if((Date1[2]<<8)+Date1[3] <(Date1[5]<<8)+Date1[6]) //如果1号数字x小于2号数字
+//				{
+//					number[0]  = Date1[1];
+//					number[1]  = Date1[4];
+//				}
+//				else
+//				{
+//					number[0]  = Date1[4];
+//					number[1]  = Date1[1];
+//				}
+//				
+//				
+//			}
+			else if(shuliang >1)  //数字数量大于1
 			{
-				if((Date1[2]<<8)+Date1[3] <(Date1[5]<<8)+Date1[6]) //如果1号数字x小于2号数字
+				for(int i =0;i<shuliang;i++)                //依次储存各数字与各数字坐标
 				{
-					number[0]  = Date1[1];
-					number[1]  = Date1[4];
+					num_shu[i] = (Date1[2+i*3]<<8) + Date1[3+i*3];
+					number[i] = Date1[1+i*3];
 				}
-				else
+				sort(number,num_shu,shuliang);               //根据数字坐标排序数字
+				for(int i = 0;i<4-shuliang;i++)
 				{
-					number[0]  = Date1[4];
-					number[1]  = Date1[1];
+					number[3-i] = 0;                        //清空未赋值数字           
 				}
 				
-				
-			}  
+			}
+			
 			else
 			{
 				number[0] = 0;
+				number[1] = 0;
+				number[2] = 0;
+				number[3] = 0;
 			}
       state1 = 0; 
-			OLED_ShowStr1(0, 5,(Date1[2]<<8)+Date1[3], 4, 16);
+			
     }										//
 		
 		
@@ -268,16 +314,33 @@ int main(void)
 		if(shuliang!=0&&statue == 0&&direction == 0&&T_num !=1&&T_num !=2&&(vvvvv-HAL_GetTick())>2000)  //如果数字数量不为0  且为前往状态  
 		{
 			vvvvv = HAL_GetTick();
-			if(number[0] == T_num)
+			if(shuliang <=2)
 			{
-					ex_fork=fork +1;  //期望岔口为下一个
-  				ex_room=1;
+				if(number[0] == T_num)
+				{
+						ex_fork=fork +1;  //期望岔口为下一个
+						ex_room=1;
+				}
+				else if(number[1] == T_num)
+				{
+						ex_fork=fork +1;  //期望岔口为下一个
+						ex_room=2;
+				}					
 			}
-			else if(number[1] == T_num)
+			else if(shuliang>2)
 			{
-					ex_fork=fork +1;  //期望岔口为下一个
-					ex_room=2;
-			}			
+				if((number[0] == T_num)||(number[1] == T_num))
+				{
+						ex_fork=fork +1;  //期望岔口为下一个
+						ex_room=1;
+				}
+				else if((number[2] == T_num)||(number[3] == T_num))
+				{
+						ex_fork=fork +1;  //期望岔口为下一个
+						ex_room=2;
+				}						
+			}
+			
 			direction = 0;
 //			direction = 1;  //先停下来
 //				Tv_A = 0;
@@ -306,7 +369,7 @@ int main(void)
 		
 		
 		
-		if(width >100&&statue == 0&&color ==0)		//如果前往过程到达岔口
+		if(width >60&&statue == 0&&color ==0)		//如果前往过程到达岔口
 		{
 			
 			
@@ -316,7 +379,7 @@ int main(void)
 				
 				fork++;        ///当前岔口加一
 			}
-			
+
 			
 
 			if(fork == ex_fork)  ///如果是期望岔口
@@ -332,23 +395,40 @@ int main(void)
 					direction = 'R';
 				}
 			}
+			if(fork == 3&&vvvvvvvv ==0)
+			{
+				vvvvvvvv = 1;
+				dir = direction;
+			}
 		}									//
 		
-		if(width >100&&statue == 1&&color ==0&&(HAL_GetTick() - vvvvvv)>2000)   //如果返回过程到达岔口
+		if(width >60&&statue == 1&&color ==0&&(HAL_GetTick() - vvvvvv)>2000)   //如果返回过程到达岔口
 		{
 			vvvvvv = HAL_GetTick();
-			if(ex_fork==3&&ex_fork==4||fork==ex_fork)
+			if(ex_fork==3&&ex_fork==4||fork==ex_fork||fork == 3)
 			{
+
 				CNT1 = z_A;
 				CNT2 = z_B;
 					Tv_A = 0;
 					Tv_B = 0;
 					HAL_Delay(500);
-				if(ex_room ==1)
+				if(fork == 3)
+				{
+					if(dir == 'R')
+					{
+						direction = 'L';  
+					}
+					else if(dir == 'L')
+					{
+						direction = 'R';  
+					}
+				}				
+				if(ex_room ==1&&fork!=3)
 				{
 					direction = 'L';  
 				}
-				if(ex_room == 2)
+				if(ex_room == 2&&fork!=3)
 				{
 					direction = 'R';
 				}				
@@ -360,7 +440,10 @@ int main(void)
 		
 		if(color == 1&&(HAL_GetTick()-vvvvvvv)>2000)  //如果到达终点
 		{
-			direction =1;
+				CNT1 = z_A;
+				CNT2 = z_B;
+			get_T_distence(CNT1,CNT2);
+			direction =3;
 			
 			if((HAL_GPIO_ReadPin(GPIOE,GPIO_PIN_3)!=0)&& statue == 0 ) //如果拿开药
 			{
@@ -385,9 +468,12 @@ int main(void)
 		
 		
 		
+		OLED_ShowStr1(0, 1,number[0], 1, 16);
+		OLED_ShowStr1(20, 1,number[1], 1, 16);
+		OLED_ShowStr1(40, 1,number[2], 1, 16);
+		OLED_ShowStr1(60, 1,number[3], 1, 16);
+		OLED_ShowStr1(0, 5, width, 4, 16);
 		
-		OLED_ShowStr1(60, 5, color, 4, 16);
-		OLED_ShowStr1(0, 1, number[0], 4, 16);
 		OLED_ShowStr1(0, 3, fork, 4, 16);
 		
     
@@ -501,7 +587,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
     {
       if (direction == 0)
       {
-				
+
 					line_pid(100, &Tv_A, &Tv_B);   		
       }
       
@@ -531,6 +617,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 				if(vvvvvvvv == 0)
 				{
 					ticks = HAL_GetTick();
+					ticksss=HAL_GetTick();
 					vvvvvvvv = 1;
 				}
 //				
@@ -567,9 +654,18 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 					get_T_distence(CNT1+2050,CNT2+300);
 					if((HAL_GetTick()-ticks)>2000)
 					{
-						vvvvvvvv = 0;
+//						vvvvvvvv = 0;
+//	          direction = 0;
+//            m = 0;	
+						Tv_A = 50;
+						Tv_B = 50;
+						
+						if((HAL_GetTick()-ticksss)>2500)
+						{
+						vvvvvvvv =0;
 	          direction = 0;
-            m = 0;				
+            m = 0;
+						}								
 					}
 					
 				}
@@ -578,9 +674,16 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 					get_T_distence(CNT1+300,CNT2+2050);
 					if((HAL_GetTick()-ticks)>2000)
 					{
+						
+						Tv_A = 50;
+						Tv_B = 50;
+						
+						if((HAL_GetTick()-ticksss)>2500)
+						{
 						vvvvvvvv =0;
 	          direction = 0;
-            m = 0;				
+            m = 0;
+						}							
 					}
 					
 				}

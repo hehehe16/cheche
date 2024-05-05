@@ -4,8 +4,8 @@
 
 
 int ceh_A=0,ceh_B=0;
-float Tv_A=60,Tv_B=60;
-float exA=60,exB=60;
+float Tv_A=80,Tv_B=80;
+float exA=80,exB=80;
 
 float v_A=0,v_B=0;
 float error_v_A=0,error_v_B=0;

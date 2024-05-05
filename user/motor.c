@@ -18,6 +18,9 @@ int lz_A=0,lz_B=0;
 int z_A=10000,z_B=10000;
 int fffff=0;
 
+
+
+
 void motor_init()
 {
     Tv_A = exA;
@@ -151,7 +154,78 @@ void motor_handle()
 }
 
 
+float 
+			last_distence_A,last_distence_B,
+			distence_A,distence_B,
+			T_distence_A,T_distence_B,
+			distence_kp=0.15,distence_ki=0,distence_kd=0.7,
+			distence_A_er,distence_B_er,
+			distence_A_last_er,distence_B_last_er,
+			distence_A_i,distence_B_i,
+			distence_A_d,distence_B_d;
 
+
+void get_T_distence(float A,float B)
+{
+	T_distence_A=A;
+	T_distence_B=B;
+}
+
+void distence_A_pid(void)   //位置  pid
+{
+	float distence_pid_out;
+	distence_A=ceh_A*65535+TIM2->CNT;
+	distence_A_last_er=distence_A_er;
+	distence_A_er=T_distence_A-distence_A;
+	distence_A_d=distence_A_er-distence_A_last_er;
+	if(0)
+	{
+		distence_A_i=distence_A_i+distence_A_er;
+	}
+	else
+	{
+		distence_A_i=0;
+	}
+	distence_pid_out=distence_kp*distence_A_er+distence_ki*distence_A_i+distence_kd*distence_A_d;
+	
+	if(distence_pid_out>80)
+	{
+		distence_pid_out=80;
+	}
+	else if(distence_pid_out<-80)
+	{
+		distence_pid_out=-80;
+	}
+	Tv_A=distence_pid_out;
+}
+
+void distence_B_pid(void)   //位置  pid
+{
+	float distence_pid_out;
+	distence_B=ceh_B*65535+TIM8->CNT;
+	distence_B_last_er=distence_B_er;
+	distence_B_er=T_distence_B-distence_B;
+	distence_B_d=distence_B_er-distence_B_last_er;
+	if(0)
+	{
+		distence_B_i=distence_B_i+distence_B_er;
+	}
+	else
+	{
+		distence_B_i=0;
+	}
+	distence_pid_out=distence_kp*distence_B_er+distence_ki*distence_B_i+distence_kd*distence_B_d;
+	
+	if(distence_pid_out>80)
+	{
+		distence_pid_out=80;
+	}
+	else if(distence_pid_out<-80)
+	{
+		distence_pid_out=-80;
+	}
+	Tv_B=distence_pid_out;
+}
 
 
 

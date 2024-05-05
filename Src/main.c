@@ -48,8 +48,8 @@ uint16_t shuliang = 0;   //数字个数
 uint16_t number[4] = {0};
 
 uint8_t tick = 0;      
-uint8_t ticks =0;
-
+int ticks =0;
+int color =0; //当前胶带颜色
 
 
 uint8_t rx_v831[6]={0};
@@ -57,7 +57,8 @@ uint8_t jiaoyan;
 uint8_t num_A=1,num_B=2;
 uint8_t rx_n_num=0;
 uint8_t sig_num=0;
-
+int CNT = 0;
+uint8_t m = 0;
 
 uint8_t fangjian_zhong[2]={0};
 uint8_t fangjianA[2]={0};
@@ -68,13 +69,16 @@ int chakou=0,fchakou=0;
 uint8_t ji=1;
 uint8_t T_num=0;
 
+int CNT1 = 0;
+int CNT2 =0;
+
 uint64_t st=0,ff_s=0,f_st=0;
 uint8_t zhuangtai=1;//1��ȡ 0�ǻ�
 char zhuanwan[4]={0}; 
 int ttttt=0;
 int statue = 0; //车的行进阶段 0：前往 1：返回
-
-char direction = 1;  //运动状态  0：正常行进 1：停止 ‘L’：左转90度，然后正常行进 ‘R’：   
+int vvvvvvvv = 0;
+char direction = 1;  //运动状态  0：正常行进 1：停止 ‘L’：左转90度，然后正常行进 ‘R’ 3:位置环pid：   
 /* USER CODE END PTD */
 
 /* Private define ------------------------------------------------------------*/
@@ -127,6 +131,7 @@ int main(void)
 
   /* USER CODE BEGIN Init */
 
+	
   /* USER CODE END Init */
 
   /* Configure the system clock */
@@ -155,7 +160,7 @@ int main(void)
 	int fork = 0; //第几个岔口
 	int ex_fork =0; //期望岔口
 	int ex_room =0;  //期望房间，1：左，2：右
-	int color =0; //当前胶带颜色
+
 	
 	int v = 0;
 	int vv = 0;
@@ -163,6 +168,7 @@ int main(void)
 	int vvvv = HAL_GetTick();
 	int vvvvv = HAL_GetTick();
 	int vvvvvv = HAL_GetTick();
+	int vvvvvvv = HAL_GetTick();
 	for(i=0;i<10;i++)
 	{
   uart_it_init(&huart1,1);
@@ -175,6 +181,14 @@ int main(void)
   // dianjiB(1500);
 
 
+//	while(1)
+//	{
+//		direction = 3;
+//		get_T_distence(15000+65535,16700+65535);
+//		OLED_ShowStr1(0,1,TIM2->CNT, 6, 16);
+//		OLED_ShowStr1(0,3,TIM8->CNT, 6, 16);
+//		
+//	}
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -197,23 +211,25 @@ int main(void)
 			}
 			else if(shuliang == 2)
 			{
-				if(Date1[2]<Date1[4]) //如果1号数字x小于2号数字
+				if((Date1[2]<<8)+Date1[3] <(Date1[5]<<8)+Date1[6]) //如果1号数字x小于2号数字
 				{
 					number[0]  = Date1[1];
-					number[1]  = Date1[3];
+					number[1]  = Date1[4];
 				}
 				else
 				{
-					
-					number[0]  = Date1[3];
+					number[0]  = Date1[4];
 					number[1]  = Date1[1];
 				}
+				
+				
 			}  
 			else
 			{
 				number[0] = 0;
 			}
       state1 = 0; 
+			OLED_ShowStr1(0, 5,(Date1[2]<<8)+Date1[3], 4, 16);
     }										//
 		
 		
@@ -293,7 +309,7 @@ int main(void)
 		if(width >100&&statue == 0&&color ==0)		//如果前往过程到达岔口
 		{
 			
-			direction = 1;
+			
 			if((HAL_GetTick()-vvvv)>1000)
 			{
 				vvvv =HAL_GetTick();
@@ -305,6 +321,8 @@ int main(void)
 
 			if(fork == ex_fork)  ///如果是期望岔口
 			{
+				CNT1 = z_A;
+				CNT2 = z_B;
 				if(ex_room ==1)
 				{
 					direction = 'L';  
@@ -321,6 +339,11 @@ int main(void)
 			vvvvvv = HAL_GetTick();
 			if(ex_fork==3&&ex_fork==4||fork==ex_fork)
 			{
+				CNT1 = z_A;
+				CNT2 = z_B;
+					Tv_A = 0;
+					Tv_B = 0;
+					HAL_Delay(500);
 				if(ex_room ==1)
 				{
 					direction = 'L';  
@@ -335,15 +358,18 @@ int main(void)
 
 		}
 		
-		if(color == 1)  //如果到达终点
+		if(color == 1&&(HAL_GetTick()-vvvvvvv)>2000)  //如果到达终点
 		{
 			direction =1;
 			
-			if(HAL_GPIO_ReadPin(GPIOE,GPIO_PIN_3)!=0) //如果拿开药
+			if((HAL_GPIO_ReadPin(GPIOE,GPIO_PIN_3)!=0)&& statue == 0 ) //如果拿开药
 			{
+				vvvvvvv = HAL_GetTick();
 				statue = 1;  //返回状态
 				direction = 2;  //倒退
 			}
+
+			
 		}               //
 		
 		
@@ -359,11 +385,12 @@ int main(void)
 		
 		
 		
-
-
+		
+		OLED_ShowStr1(60, 5, color, 4, 16);
+		OLED_ShowStr1(0, 1, number[0], 4, 16);
 		OLED_ShowStr1(0, 3, fork, 4, 16);
 		
-    OLED_ShowStr1(0, 1, number[0], 4, 16);
+    
 	
   }
   /* USER CODE END 3 */
@@ -482,26 +509,97 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 			{
 				Tv_A = 0;
         Tv_B = 0;
-				
+			
 			}
 			else if(direction ==2)
 			{
 				Tv_A = -40;
         Tv_B = -40;
 			}
+			else if(direction ==3)
+			{
+				distence_A_pid();
+				distence_B_pid();
+				
+				
+				
+			}
 			else
       {
-        turn(direction);    //转向
+				
+				
+				if(vvvvvvvv == 0)
+				{
+					ticks = HAL_GetTick();
+					vvvvvvvv = 1;
+				}
+//				
+//				if(color != 0&&m==0&&(HAL_GetTick()-ticks)>800)
+//				{
+//					m=1;
+//				}
+				
+				
+				
+//				if(m==1&&color==0)
+//				{
+//					m=2;
+//				}
+//				if(m == 0)               
+//				{
+
+//					m=1;
+//					if(direction == 'R')
+//					{
+//						CNT = z_A;
+//					}
+//					else if(direction == 'L')
+//					{
+//						CNT = z_B;
+//					}
+//					
+//				}
+				
+				
+				//turn(direction);    //转向
+				if(direction == 'R')
+				{
+					get_T_distence(CNT1+2050,CNT2+300);
+					if((HAL_GetTick()-ticks)>2000)
+					{
+						vvvvvvvv = 0;
+	          direction = 0;
+            m = 0;				
+					}
+					
+				}
+				else if(direction == 'L')
+				{
+					get_T_distence(CNT1+300,CNT2+2050);
+					if((HAL_GetTick()-ticks)>2000)
+					{
+						vvvvvvvv =0;
+	          direction = 0;
+            m = 0;				
+					}
+					
+				}
+
+				distence_A_pid();
+				distence_B_pid();
+				
+       
         
-        if(ticks >= 70)      //转向时间
-        {
-          direction = 0;
-          ticks = 0;
-        }
-        else
-        {
-          ticks++;
-        }
+				
+				
+//        if(m==2)      //转向时间
+//        {
+//					vvvvvvvv =0;
+//          direction = 0;
+//          m = 0;						
+//        }
+
+				
       }
     }
     else

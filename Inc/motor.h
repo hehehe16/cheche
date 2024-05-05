@@ -19,4 +19,7 @@ void pid_VA(void);
 void pid_VB(void);
 void motor_init();
 void motor_handle();
+void distence_A_pid(void);
+void distence_B_pid(void);
+void get_T_distence(float A,float B);
 

@@ -14,8 +14,15 @@ void line_pid(int expect, float *A, float *B)
 
     last_err = err;
     err = now - expect;
-    out = 0.1 * err + 2 * (err - last_err);
-
+    out = 0.1 * err + 0.3 * (err - last_err);
+//		if(out>15)
+//		{
+//		out=15;
+//		}
+//		if(out<-15)
+//		{
+//		out=-15;
+//		}
     Tv_A = exA + out;
     Tv_B = exB - out;
 }

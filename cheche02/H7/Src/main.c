@@ -46,11 +46,12 @@ uint8_t Date1[20] = {0}; //接收数组
 
 uint16_t shuliang = 0;   //数字个数
 
-uint16_t number[4] = {0};
+int number[4] = {0};
 
 uint8_t tick = 0;      
-uint8_t ticks =0;
-
+int ticks =0;
+int ticksss=0;
+int color =0; //当前胶带颜色
 
 
 uint8_t rx_v831[6]={0};
@@ -58,7 +59,8 @@ uint8_t jiaoyan;
 uint8_t num_A=1,num_B=2;
 uint8_t rx_n_num=0;
 uint8_t sig_num=0;
-
+int CNT = 0;
+uint8_t m = 0;
 
 uint8_t fangjian_zhong[2]={0};
 uint8_t fangjianA[2]={0};
@@ -69,18 +71,38 @@ int chakou=0,fchakou=0;
 uint8_t ji=1;
 uint8_t T_num=0;
 
+int CNT1 = 0;
+int CNT2 =0;
+
 uint64_t st=0,ff_s=0,f_st=0;
 uint8_t zhuangtai=1;//1?? 0???
 char zhuanwan[4]={0}; 
 int ttttt=0;
 int statue = 0; //车的行进阶段 0：前往 1：返回
-
-char direction = 1;  //运动状态  0：正常行进 1：停止 ‘L’：左转90度，然后正常行进 ‘R’：   
-/* USER CODE END Includes */
+int vvvvvvvv = 0;
+char direction = 1;  //运动状态  0：正常行进 1：停止 ‘L’：左转90度，然后正常行进 ‘R’ 3:位置环pid：  /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
-
+void sort(int b[],int a[],int len)
+{
+	int temp[2];
+	for(int i=0;i<len-1;i++)
+	{
+		for(int n=i+1;n<len;n++)
+		{
+			temp[0] = a[i];
+			temp[1] = b[i];
+			if(a[n]<a[i])
+			{
+				b[i] = b[n];
+				b[n]= temp[1];
+				a[i] = a[n];
+				a[n] = temp[0];
+			}
+		}
+	}
+}
 /* USER CODE END PTD */
 
 /* Private define ------------------------------------------------------------*/
@@ -166,86 +188,39 @@ int main(void)
 //	float x,y,z;
 	HAL_TIM_PWM_Start(&htim2,TIM_CHANNEL_1);
 	HAL_TIM_PWM_Start(&htim2,TIM_CHANNEL_2);
-	dianjiA(3000);
-	dianjiB(3000);
-	;
   motor_init();
 	int i=0;
-	
 	int fork = 0; //第几个岔口
 	int ex_fork =0; //期望岔口
 	int ex_room =0;  //期望房间，1：左，2：右
 	int color =0; //当前胶带颜色
-	
 	int v = 0;
 	int vv = 0;
 	int vvv=0;
 	int vvvv = HAL_GetTick();
 	int vvvvv = HAL_GetTick();
 	int vvvvvv = HAL_GetTick();
+	int vvvvvvv = HAL_GetTick();
+	int vvvvvvvv = 0;
+	char dir;
+	int num_shu[4] = {0};
 	for(i=0;i<10;i++)
 	{
-  uart_it_init(&huart1,1);
-	uart_it_init(&huart6,1);
+  uart_it_init();
 	HAL_Delay(10);
 	}
 	HAL_TIM_Base_Start_IT(&htim3);
 	HAL_TIM_Base_Start_IT(&htim4);
 	HAL_TIM_Base_Start_IT(&htim5);
+	
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-    /* USER CODE END WHILE */
-
-    /* USER CODE BEGIN 3 */
-		
-	
-		{
-//		//以下为测试内容，不用时请注释或删除
-//			
-//		//OLED测试
-//			{
-//				OLED_ShowStr1(0,0,TIM3->CNT,5,16);
-//				OLED_ShowStr1(64,0,TIM4->CNT,5,16);	
-//				OLED_ShowStr1(0,3,(int)x,3,16);
-//				OLED_ShowStr1(44,3,(int)y,3,16);
-//				OLED_ShowStr1(88,3,(int)z,3,16);
-//			}
-//		
-//		
-//		//按键
-//		//灯光测试
-//			if(HAL_GPIO_ReadPin(GPIOC,GPIO_PIN_4))
-//			{
-//					HAL_GPIO_TogglePin(GPIOD,GPIO_PIN_10);
-//			}
-//			if(HAL_GPIO_ReadPin(GPIOB,GPIO_PIN_0))
-//			{
-//					HAL_GPIO_TogglePin(GPIOD,GPIO_PIN_9);
-//			}
-//			if(HAL_GPIO_ReadPin(GPIOB,GPIO_PIN_2))
-//			{
-//					HAL_GPIO_TogglePin(GPIOD,GPIO_PIN_8);
-//			}
-//			
-//			
-//			
-//			
-		//蓝牙usart2 9600波特率 打印
-				//printf("%f,%f,%f\n",x,y,z);
-		
-		//6050数据获取测试
-
-
-	}
-
-
-	//HAL_Delay(20);
-	
-	 if (state == 1)    //串口1接收完毕,等待处理
+		if (state == 1)    //串口1接收完毕,等待处理
     {
       width =Date[0];
       now = Date[1]; 
@@ -258,33 +233,41 @@ int main(void)
 			if(shuliang == 1)
 			{
 				number[0]  = Date1[1];
+				number[1] = 0;
+				number[2] = 0;
+				number[3] = 0;
 			}
-			else if(shuliang == 2)
+			else if(shuliang >1)  //数字数量大于1
 			{
-				if(Date1[2]<Date1[4]) //如果1号数字x小于2号数字
+				for(int i =0;i<shuliang;i++)                //依次储存各数字与各数字坐标
 				{
-					number[0]  = Date1[1];
-					number[1]  = Date1[3];
+					num_shu[i] = (Date1[2+i*3]<<8) + Date1[3+i*3];
+					number[i] = Date1[1+i*3];
 				}
-				else
+				sort(number,num_shu,shuliang);               //根据数字坐标排序数字
+				for(int i = 0;i<4-shuliang;i++)
 				{
-					
-					number[0]  = Date1[3];
-					number[1]  = Date1[1];
+					number[3-i] = 0;                        //清空未赋值数字           
 				}
-			}  
+				
+			}
+			
 			else
 			{
 				number[0] = 0;
+				number[1] = 0;
+				number[2] = 0;
+				number[3] = 0;
 			}
       state1 = 0; 
+			
     }										//
 		
 		
-//		while(HAL_GPIO_ReadPin(GPIOE,GPIO_PIN_11)==0) //按键检测
-//		{
-//			T_num=number[0];
-//		}                                            //
+		while(HAL_GPIO_ReadPin(GPIOB,GPIO_PIN_2)==0) //按键检测
+		{
+			T_num=number[0];
+		}                                            //
 		
 		if(HAL_GPIO_ReadPin(GPIOE,GPIO_PIN_3)==0)			//红外检测
 		{
@@ -297,12 +280,11 @@ int main(void)
 		else
 		{
 			ff_s=HAL_GetTick();
-		}																					//
-		
+		}													
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-		if(T_num ==1) 
+			if(T_num ==1) 
 		{
 			ex_fork = 1;
 			ex_room =1;
@@ -316,59 +298,57 @@ int main(void)
 		if(shuliang!=0&&statue == 0&&direction == 0&&T_num !=1&&T_num !=2&&(vvvvv-HAL_GetTick())>2000)  //如果数字数量不为0  且为前往状态  
 		{
 			vvvvv = HAL_GetTick();
-			if(number[0] == T_num)
+			if(shuliang <=2)
 			{
-					ex_fork=fork +1;  //期望岔口为下一个
-  				ex_room=1;
+				if(number[0] == T_num)
+				{
+						ex_fork=fork +1;  //期望岔口为下一个
+						ex_room=1;
+				}
+				else if(number[1] == T_num)
+				{
+						ex_fork=fork +1;  //期望岔口为下一个
+						ex_room=2;
+				}					
 			}
-			else if(number[1] == T_num)
+			else if(shuliang>2)
 			{
-					ex_fork=fork +1;  //期望岔口为下一个
-					ex_room=2;
-			}			
+				if((number[0] == T_num)||(number[1] == T_num))
+				{
+						ex_fork=fork +1;  //期望岔口为下一个
+						ex_room=1;
+				}
+				else if((number[2] == T_num)||(number[3] == T_num))
+				{
+						ex_fork=fork +1;  //期望岔口为下一个
+						ex_room=2;
+				}						
+			}
+			
 			direction = 0;
-//			direction = 1;  //先停下来
-//				Tv_A = 0;
-//        Tv_B = 0;
-//			HAL_Delay(1000);
-//			if(number[0] == T_num)  //左边数字
-//			{
-//				ex_fork++;  //期望岔口为下一个
-//				ex_room=1;
-//			}
-//			else
-//			{
-//				__HAL_TIM_SetCompare(&htim15,TIM_CHANNEL_1,140); //转到另一边
-//				HAL_Delay(1000);
-//				if(Date1[1] ==T_num)
-//				{
-//					ex_fork++;  //期望岔口为下一个
-//					ex_room=2;
-//				}
-//				
-//				
-//			}
 		}
 		
 		
 		
 		
 		
-		if(width >100&&statue == 0&&color ==0)		//如果前往过程到达岔口
+		if(width >60&&statue == 0&&color ==0)		//如果前往过程到达岔口
 		{
 			
-			direction = 1;
+			
 			if((HAL_GetTick()-vvvv)>1000)
 			{
 				vvvv =HAL_GetTick();
 				
 				fork++;        ///当前岔口加一
 			}
-			
+
 			
 
 			if(fork == ex_fork)  ///如果是期望岔口
 			{
+				CNT1 = z_A;
+				CNT2 = z_B;
 				if(ex_room ==1)
 				{
 					direction = 'L';  
@@ -378,18 +358,40 @@ int main(void)
 					direction = 'R';
 				}
 			}
+			if(fork == 3&&vvvvvvvv ==0)
+			{
+				vvvvvvvv = 1;
+				dir = direction;
+			}
 		}									//
 		
-		if(width >100&&statue == 1&&color ==0&&(HAL_GetTick() - vvvvvv)>2000)   //如果返回过程到达岔口
+		if(width >60&&statue == 1&&color ==0&&(HAL_GetTick() - vvvvvv)>2000)   //如果返回过程到达岔口
 		{
 			vvvvvv = HAL_GetTick();
-			if(ex_fork==3&&ex_fork==4||fork==ex_fork)
+			if(ex_fork==3&&ex_fork==4||fork==ex_fork||fork == 3)
 			{
-				if(ex_room ==1)
+
+				CNT1 = z_A;
+				CNT2 = z_B;
+					Tv_A = 0;
+					Tv_B = 0;
+					HAL_Delay(500);
+				if(fork == 3)
+				{
+					if(dir == 'R')
+					{
+						direction = 'L';  
+					}
+					else if(dir == 'L')
+					{
+						direction = 'R';  
+					}
+				}				
+				if(ex_room ==1&&fork!=3)
 				{
 					direction = 'L';  
 				}
-				if(ex_room == 2)
+				if(ex_room == 2&&fork!=3)
 				{
 					direction = 'R';
 				}				
@@ -399,19 +401,46 @@ int main(void)
 
 		}
 		
-		if(color == 1)  //如果到达终点
+		if(color == 1&&(HAL_GetTick()-vvvvvvv)>2000)  //如果到达终点
 		{
-			direction =1;
+				CNT1 = z_A;
+				CNT2 = z_B;
+			get_T_distence(CNT1,CNT2);
+			direction =3;
 			
-			if(HAL_GPIO_ReadPin(GPIOE,GPIO_PIN_3)!=0) //如果拿开药
+			if((HAL_GPIO_ReadPin(GPIOE,GPIO_PIN_3)!=0)&& statue == 0 ) //如果拿开药
 			{
+				vvvvvvv = HAL_GetTick();
 				statue = 1;  //返回状态
 				direction = 2;  //倒退
 			}
+
+			
 		}               //
-		OLED_ShowStr1(0, 3, (int)v_B, 4, 16);
 		
-    OLED_ShowStr1(0, 1, (int)v_A, 4, 16);
+		
+		
+		
+		
+
+
+
+		
+
+		
+		
+		
+		
+		OLED_ShowStr1(0, 1,number[0], 1, 16);
+		OLED_ShowStr1(20, 1,number[1], 1, 16);
+		OLED_ShowStr1(40, 1,number[2], 1, 16);
+		OLED_ShowStr1(60, 1,number[3], 1, 16);
+		OLED_ShowStr1(0, 5, width, 4, 16);
+		
+		OLED_ShowStr1(0, 3, fork, 4, 16);
+		
+    
+	
 	
   }
 	
@@ -511,26 +540,30 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 
   if (htim == &htim3)
   {
+		if(v_A>=0)
     ceh_A++;   //tim1计数溢出
+		else
+			ceh_A--;
   }
 
   if (htim == &htim4)
   {
+		if(v_B>=0)
     ceh_B++;  //tim8计数溢出
+		else
+			ceh_B--;
   }
 
 	
   if (htim == &htim5)
   {
 		
-    motor_handle();   //速度pid控制
-
-    
+    motor_handle();   //速度pid控制    
     if (tick == 5)
     {
       if (direction == 0)
       {
-				
+
 					line_pid(100, &Tv_A, &Tv_B);   		
       }
       
@@ -538,26 +571,66 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 			{
 				Tv_A = 0;
         Tv_B = 0;
-				
+			
 			}
 			else if(direction ==2)
 			{
 				Tv_A = -40;
         Tv_B = -40;
 			}
+			else if(direction ==3)
+			{
+				distence_A_pid();
+				distence_B_pid();
+			}
 			else
       {
-        turn(direction);    //转向
-        
-        if(ticks >= 70)      //转向时间
-        {
-          direction = 0;
-          ticks = 0;
-        }
-        else
-        {
-          ticks++;
-        }
+				
+				
+				if(vvvvvvvv == 0)
+				{
+					ticks = HAL_GetTick();
+					ticksss=HAL_GetTick();
+					vvvvvvvv = 1;
+				}
+
+				
+				if(direction == 'R')
+				{
+					get_T_distence(CNT1+2050,CNT2+300);
+					if((HAL_GetTick()-ticks)>2000)
+					{			
+						Tv_A = 50;
+						Tv_B = 50;
+						if((HAL_GetTick()-ticksss)>2500)
+						{
+						vvvvvvvv =0;
+	          direction = 0;
+            m = 0;
+						}								
+					}
+				}
+				else if(direction == 'L')
+				{
+					get_T_distence(CNT1+300,CNT2+2050);
+					if((HAL_GetTick()-ticks)>2000)
+					{
+						
+						Tv_A = 50;
+						Tv_B = 50;
+						
+						if((HAL_GetTick()-ticksss)>2500)
+						{
+						vvvvvvvv =0;
+	          direction = 0;
+            m = 0;
+						}							
+					}
+					
+				}
+
+				distence_A_pid();
+				distence_B_pid();	
       }
     }
     else

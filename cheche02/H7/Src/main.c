@@ -27,6 +27,7 @@
 /* USER CODE BEGIN Includes */
 #include "oled.h"
 #include "stdio.h"
+#include <stdarg.h>
 #include "mpu6050.h"
 #include "inv_mpu.h"
 #include "motor.h"
@@ -53,7 +54,7 @@ int ticks =0;
 int ticksss=0;
 int color =0; //当前胶带颜色
 
-
+char direction = 1;  //杩愬姩鐘舵�? 0锛氭甯歌杩?1锛氬仠姝?鈥楲鈥欙細宸﹁浆90搴︼紝鐒跺悗姝ｅ父琛岃繘 鈥楻鈥?3:浣嶇疆鐜痯id锛? 
 uint8_t rx_v831[6]={0};
 uint8_t jiaoyan;
 uint8_t num_A=1,num_B=2;
@@ -80,11 +81,11 @@ char zhuanwan[4]={0};
 int ttttt=0;
 int statue = 0; //车的行进阶段 0：前往 1：返回
 int vvvvvvvv = 0;
-char direction = 1;  //运动状态  0：正常行进 1：停止 ‘L’：左转90度，然后正常行进 ‘R’ 3:位置环pid：  /* USER CODE END Includes */
+/* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
-void sort(int b[],int a[],int len)
+void sort(int b[],int a[],int len)    //排序算法 b:被排序对象  a：排序依据
 {
 	int temp[2];
 	for(int i=0;i<len-1;i++)
@@ -103,6 +104,21 @@ void sort(int b[],int a[],int len)
 		}
 	}
 }
+
+void usart_printf(char *format,...)
+{
+	char String[100];		 //定义输出字符串
+	va_list arg;			 //定义一个参数列表变量va_list是一个类型名，arg是变量名
+	va_start(arg,format);	 //从format位置开始接收参数表放在arg里面
+	
+	//sprintf打印位置是String，格式化字符串是format，参数表是arg，对于封装格式sprintf要改成vsprintf
+	vsprintf(String,format,arg);
+	va_end(arg);			 //释放参数表
+	HAL_UART_Transmit(&huart2,(uint8_t *)String, 1, 0xffff);
+	//usart_SendString(String);//发送String
+	
+}
+
 /* USER CODE END PTD */
 
 /* Private define ------------------------------------------------------------*/
@@ -180,7 +196,7 @@ int main(void)
 	
 	HAL_Delay(200);
 	
-	HAL_GPIO_TogglePin(GPIOC,GPIO_PIN_10);
+	//HAL_GPIO_TogglePin(GPIOC,GPIO_PIN_10);
 	
 	HAL_Delay(200);
 	HAL_TIM_Encoder_Start(&htim3,TIM_CHANNEL_1|TIM_CHANNEL_2);
@@ -212,7 +228,7 @@ int main(void)
 	HAL_TIM_Base_Start_IT(&htim3);
 	HAL_TIM_Base_Start_IT(&htim4);
 	HAL_TIM_Base_Start_IT(&htim5);
-	
+
 
   /* USER CODE END 2 */
 
@@ -220,6 +236,7 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+		
 		if (state == 1)    //串口1接收完毕,等待处理
     {
       width =Date[0];
@@ -342,9 +359,10 @@ int main(void)
 				
 				fork++;        ///当前岔口加一
 			}
-
-			
-
+											////
+			ex_fork = 1;  
+			ex_room =1;	
+											////测试
 			if(fork == ex_fork)  ///如果是期望岔口
 			{
 				CNT1 = z_A;
@@ -371,8 +389,8 @@ int main(void)
 			if(ex_fork==3&&ex_fork==4||fork==ex_fork||fork == 3)
 			{
 
-				CNT1 = z_A;
-				CNT2 = z_B;
+				CNT1 = z_A+50;
+				CNT2 = z_B+50;
 					Tv_A = 0;
 					Tv_B = 0;
 					HAL_Delay(500);
@@ -401,10 +419,10 @@ int main(void)
 
 		}
 		
-		if(color == 1&&(HAL_GetTick()-vvvvvvv)>2000)  //如果到达终点
+		if(color == 1&&(HAL_GetTick()-vvvvvvv)>2000&&(direction == 0||direction == 3))  //如果到达终点
 		{
-				CNT1 = z_A;
-				CNT2 = z_B;
+				CNT1 = z_A+10;
+				CNT2 = z_B+10;
 			get_T_distence(CNT1,CNT2);
 			direction =3;
 			
@@ -413,7 +431,7 @@ int main(void)
 				vvvvvvv = HAL_GetTick();
 				statue = 1;  //返回状态
 				direction = 2;  //倒退
-			}
+			}  
 
 			
 		}               //
@@ -564,7 +582,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
       if (direction == 0)
       {
 
-					line_pid(100, &Tv_A, &Tv_B);   		
+					line_pid(80, &Tv_A, &Tv_B);   		
       }
       
 			else if(direction ==1)
@@ -597,7 +615,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 				
 				if(direction == 'R')
 				{
-					get_T_distence(CNT1+2050,CNT2+300);
+					get_T_distence(CNT1+2250,CNT2+600);
 					if((HAL_GetTick()-ticks)>2000)
 					{			
 						Tv_A = 50;
@@ -612,7 +630,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 				}
 				else if(direction == 'L')
 				{
-					get_T_distence(CNT1+300,CNT2+2050);
+					get_T_distence(CNT1+600,CNT2+2250);
 					if((HAL_GetTick()-ticks)>2000)
 					{
 						

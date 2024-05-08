@@ -86,7 +86,7 @@ void pid_VA(void)
 {
 	last_error_v_A=error_v_A;
 	error_v_A=Tv_A-v_A;
-	pid_out_VA= 0*(error_v_A-last_error_v_A)+5*error_v_A;
+	pid_out_VA= 10*(error_v_A-last_error_v_A)+5*error_v_A;
 	pwmA=pwmA+pid_out_VA;
 	 if(pwmA>9999)
 	 	pwmA=9999;
@@ -99,7 +99,7 @@ void pid_VB(void)
 {
 	last_error_v_B=error_v_B;
 	error_v_B=Tv_B-v_B;
-	pid_out_VB= 0*(error_v_B-last_error_v_B)+5*error_v_B;
+	pid_out_VB= 10*(error_v_B-last_error_v_B)+5*error_v_B;
 	pwmB=pwmB+pid_out_VB;
 	 if(pwmB>9999)
 	 	pwmB=9999;
@@ -141,7 +141,7 @@ float
 			last_distence_A,last_distence_B,
 			distence_A,distence_B,
 			T_distence_A,T_distence_B,
-			distence_kp=0.15,distence_ki=0,distence_kd=0.2,
+			distence_kp=0.2,distence_ki=0,distence_kd=1,
 			distence_A_er,distence_B_er,
 			distence_A_last_er,distence_B_last_er,
 			distence_A_i,distence_B_i,

@@ -6,17 +6,17 @@ h7/main.o: ..\Src\main.c ..\Inc\main.h \
   ..\Drivers\CMSIS\Device\ST\STM32H7xx\Include\stm32h7xx.h \
   ..\Drivers\CMSIS\Device\ST\STM32H7xx\Include\stm32h750xx.h \
   ..\Drivers\CMSIS\Include\core_cm7.h \
-  D:\tool\Kile\ARM\ARMCLANG\Bin\..\include\stdint.h \
+  D:\keil\keil\ARM\ARMCLANG\Bin\..\include\stdint.h \
   ..\Drivers\CMSIS\Include\cmsis_version.h \
   ..\Drivers\CMSIS\Include\cmsis_compiler.h \
   ..\Drivers\CMSIS\Include\cmsis_armclang.h \
-  D:\tool\Kile\ARM\ARMCLANG\Bin\..\include\arm_compat.h \
-  D:\tool\Kile\ARM\ARMCLANG\Bin\..\include\arm_acle.h \
+  D:\keil\keil\ARM\ARMCLANG\Bin\..\include\arm_compat.h \
+  D:\keil\keil\ARM\ARMCLANG\Bin\..\include\arm_acle.h \
   ..\Drivers\CMSIS\Include\mpu_armv7.h \
   ..\Drivers\CMSIS\Device\ST\STM32H7xx\Include\system_stm32h7xx.h \
   ..\Drivers\STM32H7xx_HAL_Driver\Inc\Legacy\stm32_hal_legacy.h \
-  D:\tool\Kile\ARM\ARMCLANG\Bin\..\include\stddef.h \
-  D:\tool\Kile\ARM\ARMCLANG\Bin\..\include\math.h \
+  D:\keil\keil\ARM\ARMCLANG\Bin\..\include\stddef.h \
+  D:\keil\keil\ARM\ARMCLANG\Bin\..\include\math.h \
   ..\Drivers\STM32H7xx_HAL_Driver\Inc\stm32h7xx_hal_rcc_ex.h \
   ..\Drivers\STM32H7xx_HAL_Driver\Inc\stm32h7xx_hal_gpio.h \
   ..\Drivers\STM32H7xx_HAL_Driver\Inc\stm32h7xx_hal_gpio_ex.h \
@@ -37,6 +37,7 @@ h7/main.o: ..\Src\main.c ..\Inc\main.h \
   ..\Drivers\STM32H7xx_HAL_Driver\Inc\stm32h7xx_hal_uart.h \
   ..\Drivers\STM32H7xx_HAL_Driver\Inc\stm32h7xx_hal_uart_ex.h \
   ..\Inc\i2c.h ..\Inc\tim.h ..\Inc\usart.h ..\Inc\gpio.h ..\oled\oled.h \
-  D:\tool\Kile\ARM\ARMCLANG\Bin\..\include\stdio.h \
+  D:\keil\keil\ARM\ARMCLANG\Bin\..\include\stdio.h \
+  D:\keil\keil\ARM\ARMCLANG\Bin\..\include\stdarg.h \
   ..\MPU6050\MPU6050\mpu6050.h ..\MPU6050\MPU6050\eMPL\inv_mpu.h \
   ..\user\motor.h ..\user\control.h ..\user\uart_it.h

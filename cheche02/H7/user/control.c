@@ -53,7 +53,7 @@ void line_pid_daozhe(int expect, float *A, float *B)
 
     last_err = err;
     err = now - expect;
-    out = 0.1 * err + 2 * (err - last_err);
+    out = 0.1 * err + 3 * (err - last_err);
 
     Tv_A = exA - out;
     Tv_B = exB + out;

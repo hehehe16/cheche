@@ -1,3 +1,6 @@
+#ifndef _MOTOR__H
+#define _MOTOR__H
+
 #include "main.h"
 extern float exA,exB;
 extern int ceh_A,ceh_B;
@@ -33,3 +36,4 @@ void distence_A_pid(void);
 void distence_B_pid(void);
 
 
+#endif

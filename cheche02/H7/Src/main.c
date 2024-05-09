@@ -75,12 +75,16 @@ uint8_t T_num=0;
 int CNT1 = 0;
 int CNT2 =0;
 
+
+
 uint64_t st=0,ff_s=0,f_st=0;
 uint8_t zhuangtai=1;//1?? 0???
 char zhuanwan[4]={0}; 
 int ttttt=0;
 int statue = 0; //车的行进阶段 0：前往 1：返回
 int vvvvvvvv = 0;
+uint8_t vvvvvvvvv=0;
+int tickssss = 0;
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -107,6 +111,7 @@ void sort(int b[],int a[],int len)    //排序算法 b:被排序对象  a：排序依据
 
 void usart_printf(char *format,...)
 {
+	int i =0;
 	char String[100];		 //定义输出字符串
 	va_list arg;			 //定义一个参数列表变量va_list是一个类型名，arg是变量名
 	va_start(arg,format);	 //从format位置开始接收参数表放在arg里面
@@ -114,8 +119,15 @@ void usart_printf(char *format,...)
 	//sprintf打印位置是String，格式化字符串是format，参数表是arg，对于封装格式sprintf要改成vsprintf
 	vsprintf(String,format,arg);
 	va_end(arg);			 //释放参数表
-	HAL_UART_Transmit(&huart2,(uint8_t *)String, 1, 0xffff);
-	//usart_SendString(String);//发送String
+	while(1)
+	{
+		if(String[i] == 0)
+		{
+			return;
+		}
+		HAL_UART_Transmit(&huart2,(uint8_t *)&String[i], 1, 0xffff);
+		i++;
+	}
 	
 }
 
@@ -218,7 +230,7 @@ int main(void)
 	int vvvvvv = HAL_GetTick();
 	int vvvvvvv = HAL_GetTick();
 	int vvvvvvvv = 0;
-	char dir;
+	char dir[8];
 	int num_shu[4] = {0};
 	for(i=0;i<10;i++)
 	{
@@ -351,18 +363,6 @@ int main(void)
 		
 		if(width >60&&statue == 0&&color ==0)		//如果前往过程到达岔口
 		{
-			
-			
-			if((HAL_GetTick()-vvvv)>1000)
-			{
-				vvvv =HAL_GetTick();
-				
-				fork++;        ///当前岔口加一
-			}
-											////
-			ex_fork = 1;  
-			ex_room =1;	
-											////测试
 			if(fork == ex_fork)  ///如果是期望岔口
 			{
 				CNT1 = z_A;
@@ -376,67 +376,76 @@ int main(void)
 					direction = 'R';
 				}
 			}
-			if(fork == 3&&vvvvvvvv ==0)
+//			if(fork == 3&&vvvvvvvv ==0)
+//			{
+//				vvvvvvvv = 1;
+//				dir[fork] = direction;
+//			}
+			if((HAL_GetTick()-vvvv)>1000)
 			{
-				vvvvvvvv = 1;
-				dir = direction;
-			}
+				
+				vvvv =HAL_GetTick();
+				fork++;        ///当前岔口加一
+				dir[fork] = direction;
+			}			
 		}									//
 		
-		if(width >60&&statue == 1&&color ==0&&(HAL_GetTick() - vvvvvv)>2000)   //如果返回过程到达岔口
+		if(width >60&&statue == 1&&color ==0&&(HAL_GetTick() - vvvvvv)>2000&&direction == 0)   //如果返回过程到达岔口
 		{
 			vvvvvv = HAL_GetTick();
-			if(ex_fork==3&&ex_fork==4||fork==ex_fork||fork == 3)
-			{
+//			if(ex_fork==3&&ex_fork==4||fork==ex_fork||fork == 3)
+//			{
 
 				CNT1 = z_A+50;
 				CNT2 = z_B+50;
 					Tv_A = 0;
 					Tv_B = 0;
 					HAL_Delay(500);
-				if(fork == 3)
-				{
-					if(dir == 'R')
+//				if(fork == 3)
+//				{
+					if(dir[fork] == 'R')
 					{
 						direction = 'L';  
 					}
-					else if(dir == 'L')
+					else if(dir[fork] == 'L')
 					{
 						direction = 'R';  
 					}
-				}				
-				if(ex_room ==1&&fork!=3)
-				{
-					direction = 'L';  
-				}
-				if(ex_room == 2&&fork!=3)
-				{
-					direction = 'R';
-				}				
-			}
+			//	}				
+//				if(ex_room ==1&&fork!=3)
+//				{
+//					direction = 'L';  
+//				}
+//				if(ex_room == 2&&fork!=3)
+//				{
+//					direction = 'R';
+//				}				
+	//		}
 			
 			fork--;
 
 		}
 		
-		if(color == 1&&(HAL_GetTick()-vvvvvvv)>2000&&(direction == 0||direction == 3))  //如果到达终点
+		if(color == 1&&(direction == 0||direction == 3))  //如果到达终点
 		{
-				CNT1 = z_A+10;
-				CNT2 = z_B+10;
+				CNT1 = z_A+700;
+				CNT2 = z_B+700;
 			get_T_distence(CNT1,CNT2);
 			direction =3;
 			
-			if((HAL_GPIO_ReadPin(GPIOE,GPIO_PIN_3)!=0)&& statue == 0 ) //如果拿开药
-			{
-				vvvvvvv = HAL_GetTick();
-				statue = 1;  //返回状态
-				direction = 2;  //倒退
-			}  
+
 
 			
 		}               //
 		
-		
+		if((HAL_GPIO_ReadPin(GPIOE,GPIO_PIN_3)!=0)&& statue == 0 &&direction ==3) //如果拿开药
+		{
+				vvvvvvv = HAL_GetTick();
+				statue = 1;  //返回状态
+				CNT1 = z_A;
+				CNT2 = z_B;
+				direction = 2;  //倒退
+		}  
 		
 		
 		
@@ -529,12 +538,7 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
-int fputc(int ch, FILE *f)
-{
-	HAL_UART_Transmit(&huart2, (uint8_t *)&ch, 1, 0xffff);
-	return ch;
-}
-//蓝牙重定向
+
 
 
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
@@ -593,8 +597,27 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 			}
 			else if(direction ==2)
 			{
-				Tv_A = -40;
-        Tv_B = -40;
+				if(vvvvvvvvv == 0)
+				{
+					tickssss=HAL_GetTick();
+					vvvvvvvvv = 1;
+				}
+				
+				
+				get_T_distence(CNT1-1700,CNT2);
+				if((HAL_GetTick()-tickssss)>1000)
+				{
+					get_T_distence(CNT1-1700,CNT2+1700);
+				}
+				if((HAL_GetTick()-tickssss) >2000)
+				{
+					vvvvvvvvv=0;
+					direction = 0;
+				}
+				distence_A_pid();
+				distence_B_pid();
+//				Tv_A = -40;
+//        Tv_B = -40;
 			}
 			else if(direction ==3)
 			{

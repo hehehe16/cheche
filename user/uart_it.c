@@ -8,7 +8,7 @@ static uint8_t Rx_counter = 0;//接收数组计数
 static uint8_t Rx_state1 = 0;//串口接收阶段
 static uint8_t com_date1 = 0;//串口缓存￿??
 static uint8_t Rx_counter1 = 0;//接收数组计数
-
+static uint8_t a=1;
 
 
 void uart_it_init(UART_HandleTypeDef* huart,uint8_t size)
@@ -71,8 +71,18 @@ if (*state == 0) // state=0：处于等待接收或接收过程状�?? state=1:
 		}
 		if (*state == 0)
 		{
-
-			Data[Rx_counter1++] = com_date1;
+			if(a == 1)
+			{
+				Data[Rx_counter1] = com_date1;
+				a=2;
+			}
+			else if(a == 2)
+			{
+				Data[Rx_counter1] = (Data[Rx_counter1]<<8)+com_date1;
+				Rx_counter1++;
+				a = 1;
+			}
+			//Data[Rx_counter1++] = com_date1;
 		}
 	}
 }

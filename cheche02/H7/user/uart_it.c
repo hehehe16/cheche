@@ -59,34 +59,24 @@ if (*state == 0) // state=0：处于等待接收或接收过程状�?? state=1:
 
 	if (Rx_state1 == 0 && com_date1 == 0x2C)
 	{
-		Rx_state1++;
+		Rx_state1=1;
 	}
-	else if (Rx_state1 == 2 && com_date1 == 0x12)
+	else if (Rx_state1 == 1 && com_date1 == 0x12)
 	{
-		Rx_state1++;
+		Rx_state1=2;
 	}
-	else if (Rx_state1 == 3)
+	else if (Rx_state1 == 2)
 	{
 		if (com_date1 == 0x5B)
 		{
 			Rx_state1 = 0;
 			Rx_counter1 = 0;
 			*state = 1;
-			a=1;
+			
 		}
 		if (*state == 0)
 		{
-			if(a == 1)
-			{
-				Data[Rx_counter1] = com_date1;
-				a=2;
-			}
-			else if(a == 2)
-			{
-				Data[Rx_counter1] = (Data[Rx_counter1]<<8)+com_date1;
-				Rx_counter1++;
-				a = 1;
-			}
+			Data[Rx_counter1++] = com_date1;
 			//Data[Rx_counter1++] = com_date1;
 		}
 	}

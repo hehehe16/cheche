@@ -230,7 +230,7 @@ int main(void)
 	int vvvvvv = HAL_GetTick();
 	int vvvvvvv = HAL_GetTick();
 	int vvvvvvvv = 0;
-	char dir[8];
+	char dir[8]={0};
 	int num_shu[4] = {0};
 	for(i=0;i<10;i++)
 	{
@@ -367,6 +367,7 @@ int main(void)
 			{
 				CNT1 = z_A;
 				CNT2 = z_B;
+				
 				if(ex_room ==1)
 				{
 					direction = 'L';  
@@ -381,12 +382,14 @@ int main(void)
 //				vvvvvvvv = 1;
 //				dir[fork] = direction;
 //			}
-			if((HAL_GetTick()-vvvv)>1000)
+			if((HAL_GetTick()-vvvv)>50)
 			{
-				
-				vvvv =HAL_GetTick();
-				fork++;        ///当前岔口加一
+//				
+//				vvvv =HAL_GetTick();
+//				        ///当前岔口加一
+				fork++;
 				dir[fork] = direction;
+				
 			}			
 		}									//
 		
@@ -410,18 +413,7 @@ int main(void)
 					else if(dir[fork] == 'L')
 					{
 						direction = 'R';  
-					}
-			//	}				
-//				if(ex_room ==1&&fork!=3)
-//				{
-//					direction = 'L';  
-//				}
-//				if(ex_room == 2&&fork!=3)
-//				{
-//					direction = 'R';
-//				}				
-	//		}
-			
+					}		
 			fork--;
 
 		}
@@ -450,22 +442,20 @@ int main(void)
 		
 		
 
+		OLED_ShowStr1(0, 1,z_A, 6, 16);
+		OLED_ShowStr1(64, 1,z_B, 6, 16);
+		OLED_ShowStr1(105, 5,fork, 3, 16);
+		OLED_ShowStr1(30, 3,T_num, 1, 16);
+		OLED_ShowStr1(60, 3,direction, 1, 16);
+		OLED_ShowStr1(90, 3, number[0], 3, 16);
+		OLED_ShowChar(0,5,dir[0],16);
+		OLED_ShowChar(17,5,dir[1],16);
+		OLED_ShowChar(34,5,dir[2],16);
+		OLED_ShowChar(51,5,dir[3],16);
+		OLED_ShowChar(68,5,dir[4],16);
+		OLED_ShowChar(85,5,dir[5],16);
 
-
-		
-
-		
-		
-		
-		
-		OLED_ShowStr1(0, 1,number[0], 1, 16);
-		OLED_ShowStr1(20, 1,number[1], 1, 16);
-		OLED_ShowStr1(40, 1,number[2], 1, 16);
-		OLED_ShowStr1(60, 1,number[3], 1, 16);
-		OLED_ShowStr1(0, 5, width, 4, 16);
-		
-		OLED_ShowStr1(0, 3, fork, 4, 16);
-		
+	
     
 	
 	
@@ -626,16 +616,13 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 			}
 			else
       {
-				
-				
 				if(vvvvvvvv == 0)
 				{
 					ticks = HAL_GetTick();
 					ticksss=HAL_GetTick();
 					vvvvvvvv = 1;
 				}
-
-				
+		
 				if(direction == 'R')
 				{
 					get_T_distence(CNT1+2250,CNT2+600);

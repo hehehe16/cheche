@@ -63,13 +63,14 @@ Section Cross References
     main.o(.text.main) refers to stm32h7xx_hal_tim.o(.text.HAL_TIM_Base_Start_IT) for HAL_TIM_Base_Start_IT
     main.o(.text.main) refers to tim.o(.bss.htim5) for htim5
     main.o(.text.main) refers to main.o(.bss..L_MergedGlobals) for .L_MergedGlobals
-    main.o(.text.main) refers to oled.o(.text.OLED_ShowStr1) for OLED_ShowStr1
     main.o(.text.main) refers to control.o(.bss.width) for width
+    main.o(.text.main) refers to motor.o(.data..L_MergedGlobals) for z_A
+    main.o(.text.main) refers to oled.o(.text.OLED_ShowStr1) for OLED_ShowStr1
+    main.o(.text.main) refers to oled.o(.text.OLED_ShowChar) for OLED_ShowChar
     main.o(.text.main) refers to control.o(.data.now) for now
     main.o(.text.main) refers to rt_memclr_w.o(.text) for __aeabi_memclr4
     main.o(.text.main) refers to stm32h7xx_hal_gpio.o(.text.HAL_GPIO_ReadPin) for HAL_GPIO_ReadPin
     main.o(.text.main) refers to main.o(.data.direction) for direction
-    main.o(.text.main) refers to motor.o(.data..L_MergedGlobals) for z_A
     main.o(.text.main) refers to motor.o(.text.get_T_distence) for get_T_distence
     main.o(.ARM.exidx.text.main) refers to main.o(.text.main) for [Anonymous Symbol]
     main.o(.text.SystemClock_Config) refers to rt_memclr_w.o(.text) for __aeabi_memclr4
@@ -4868,18 +4869,18 @@ Image Symbol Table
     [Anonymous Symbol]                       0x08007c08   Section        0  motor.o(.text.get_T_distence)
     [Anonymous Symbol]                       0x08007c20   Section        0  control.o(.text.line_pid)
     [Anonymous Symbol]                       0x08007cb8   Section        0  main.o(.text.main)
-    [Anonymous Symbol]                       0x08008508   Section        0  motor.o(.text.motor_handle)
-    [Anonymous Symbol]                       0x080086e0   Section        0  motor.o(.text.motor_init)
-    [Anonymous Symbol]                       0x08008748   Section        0  uart_it.o(.text.uart_it_init)
-    [Anonymous Symbol]                       0x08008778   Section        0  uart_it.o(.text.uart_it_receive)
-    [Anonymous Symbol]                       0x080087f0   Section        0  uart_it.o(.text.uart_it_receive1)
-    $v0                                      0x08008880   Number         0  fpinit.o(x$fpl$fpinit)
-    x$fpl$fpinit                             0x08008880   Section       26  fpinit.o(x$fpl$fpinit)
-    .Lswitch.table.UART_SetConfig.5          0x0800889a   Data           6  stm32h7xx_hal_uart.o(.rodata..Lswitch.table.UART_SetConfig.5)
-    .Lswitch.table.UART_SetConfig.7          0x080088a0   Data           6  stm32h7xx_hal_uart.o(.rodata..Lswitch.table.UART_SetConfig.7)
-    UARTEx_SetNbDataToProcess.numerator      0x080090d6   Data           8  stm32h7xx_hal_uart_ex.o(.rodata.cst8)
-    [Anonymous Symbol]                       0x080090d6   Section        0  stm32h7xx_hal_uart_ex.o(.rodata.cst8)
-    UARTEx_SetNbDataToProcess.denominator    0x080090de   Data           8  stm32h7xx_hal_uart_ex.o(.rodata.cst8)
+    [Anonymous Symbol]                       0x08008558   Section        0  motor.o(.text.motor_handle)
+    [Anonymous Symbol]                       0x08008730   Section        0  motor.o(.text.motor_init)
+    [Anonymous Symbol]                       0x08008798   Section        0  uart_it.o(.text.uart_it_init)
+    [Anonymous Symbol]                       0x080087c8   Section        0  uart_it.o(.text.uart_it_receive)
+    [Anonymous Symbol]                       0x08008840   Section        0  uart_it.o(.text.uart_it_receive1)
+    $v0                                      0x080088d0   Number         0  fpinit.o(x$fpl$fpinit)
+    x$fpl$fpinit                             0x080088d0   Section       26  fpinit.o(x$fpl$fpinit)
+    .Lswitch.table.UART_SetConfig.5          0x080088ea   Data           6  stm32h7xx_hal_uart.o(.rodata..Lswitch.table.UART_SetConfig.5)
+    .Lswitch.table.UART_SetConfig.7          0x080088f0   Data           6  stm32h7xx_hal_uart.o(.rodata..Lswitch.table.UART_SetConfig.7)
+    UARTEx_SetNbDataToProcess.numerator      0x08009126   Data           8  stm32h7xx_hal_uart_ex.o(.rodata.cst8)
+    [Anonymous Symbol]                       0x08009126   Section        0  stm32h7xx_hal_uart_ex.o(.rodata.cst8)
+    UARTEx_SetNbDataToProcess.denominator    0x0800912e   Data           8  stm32h7xx_hal_uart_ex.o(.rodata.cst8)
     .L_MergedGlobals                         0x24000000   Data           8  stm32h7xx_hal.o(.data..L_MergedGlobals)
     [Anonymous Symbol]                       0x24000000   Section        0  stm32h7xx_hal.o(.data..L_MergedGlobals)
     .L_MergedGlobals                         0x24000008   Data           8  system_stm32h7xx.o(.data..L_MergedGlobals)
@@ -5263,21 +5264,21 @@ Image Symbol Table
     distence_B_pid                           0x08007b79   Thumb Code   144  motor.o(.text.distence_B_pid)
     get_T_distence                           0x08007c09   Thumb Code    18  motor.o(.text.get_T_distence)
     line_pid                                 0x08007c21   Thumb Code   152  control.o(.text.line_pid)
-    main                                     0x08007cb9   Thumb Code  2128  main.o(.text.main)
-    motor_handle                             0x08008509   Thumb Code   472  motor.o(.text.motor_handle)
-    motor_init                               0x080086e1   Thumb Code    98  motor.o(.text.motor_init)
-    uart_it_init                             0x08008749   Thumb Code    46  uart_it.o(.text.uart_it_init)
-    uart_it_receive                          0x08008779   Thumb Code   116  uart_it.o(.text.uart_it_receive)
-    uart_it_receive1                         0x080087f1   Thumb Code   144  uart_it.o(.text.uart_it_receive1)
-    _fp_init                                 0x08008881   Thumb Code    26  fpinit.o(x$fpl$fpinit)
-    __fplib_config_fpu_vfp                   0x08008899   Thumb Code     0  fpinit.o(x$fpl$fpinit)
-    __fplib_config_pureend_doubles           0x08008899   Thumb Code     0  fpinit.o(x$fpl$fpinit)
-    D1CorePrescTable                         0x080088a6   Data          16  system_stm32h7xx.o(.rodata.D1CorePrescTable)
-    F6x8                                     0x080088b6   Data         552  oled.o(.rodata.F6x8)
-    F8X16                                    0x08008ade   Data        1504  oled.o(.rodata.F8X16)
-    UARTPrescTable                           0x080090be   Data          24  stm32h7xx_hal_uart.o(.rodata.UARTPrescTable)
-    Region$$Table$$Base                      0x080090e8   Number         0  anon$$obj.o(Region$$Table)
-    Region$$Table$$Limit                     0x08009108   Number         0  anon$$obj.o(Region$$Table)
+    main                                     0x08007cb9   Thumb Code  2206  main.o(.text.main)
+    motor_handle                             0x08008559   Thumb Code   472  motor.o(.text.motor_handle)
+    motor_init                               0x08008731   Thumb Code    98  motor.o(.text.motor_init)
+    uart_it_init                             0x08008799   Thumb Code    46  uart_it.o(.text.uart_it_init)
+    uart_it_receive                          0x080087c9   Thumb Code   116  uart_it.o(.text.uart_it_receive)
+    uart_it_receive1                         0x08008841   Thumb Code   144  uart_it.o(.text.uart_it_receive1)
+    _fp_init                                 0x080088d1   Thumb Code    26  fpinit.o(x$fpl$fpinit)
+    __fplib_config_fpu_vfp                   0x080088e9   Thumb Code     0  fpinit.o(x$fpl$fpinit)
+    __fplib_config_pureend_doubles           0x080088e9   Thumb Code     0  fpinit.o(x$fpl$fpinit)
+    D1CorePrescTable                         0x080088f6   Data          16  system_stm32h7xx.o(.rodata.D1CorePrescTable)
+    F6x8                                     0x08008906   Data         552  oled.o(.rodata.F6x8)
+    F8X16                                    0x08008b2e   Data        1504  oled.o(.rodata.F8X16)
+    UARTPrescTable                           0x0800910e   Data          24  stm32h7xx_hal_uart.o(.rodata.UARTPrescTable)
+    Region$$Table$$Base                      0x08009138   Number         0  anon$$obj.o(Region$$Table)
+    Region$$Table$$Limit                     0x08009158   Number         0  anon$$obj.o(Region$$Table)
     uwTickFreq                               0x24000000   Data           1  stm32h7xx_hal.o(.data..L_MergedGlobals)
     uwTickPrio                               0x24000004   Data           4  stm32h7xx_hal.o(.data..L_MergedGlobals)
     SystemCoreClock                          0x24000008   Data           4  system_stm32h7xx.o(.data..L_MergedGlobals)
@@ -5362,9 +5363,9 @@ Memory Map of the image
 
   Image Entry point : 0x08000299
 
-  Load Region LR_IROM1 (Base: 0x08000000, Size: 0x00009158, Max: 0x00020000, ABSOLUTE)
+  Load Region LR_IROM1 (Base: 0x08000000, Size: 0x000091a8, Max: 0x00020000, ABSOLUTE)
 
-    Execution Region ER_IROM1 (Exec base: 0x08000000, Load base: 0x08000000, Size: 0x00009108, Max: 0x00020000, ABSOLUTE)
+    Execution Region ER_IROM1 (Exec base: 0x08000000, Load base: 0x08000000, Size: 0x00009158, Max: 0x00020000, ABSOLUTE)
 
     Exec Addr    Load Addr    Size         Type   Attr      Idx    E Section Name        Object
 
@@ -5646,47 +5647,48 @@ Memory Map of the image
     0x08007c08   0x08007c08   0x00000012   Code   RO         1597    .text.get_T_distence  motor.o
     0x08007c1a   0x08007c1a   0x00000006   PAD
     0x08007c20   0x08007c20   0x00000098   Code   RO         1567    .text.line_pid      control.o
-    0x08007cb8   0x08007cb8   0x00000850   Code   RO           15    .text.main          main.o
-    0x08008508   0x08008508   0x000001d8   Code   RO         1595    .text.motor_handle  motor.o
-    0x080086e0   0x080086e0   0x00000062   Code   RO         1585    .text.motor_init    motor.o
-    0x08008742   0x08008742   0x00000006   PAD
-    0x08008748   0x08008748   0x0000002e   Code   RO         1616    .text.uart_it_init  uart_it.o
-    0x08008776   0x08008776   0x00000002   PAD
-    0x08008778   0x08008778   0x00000074   Code   RO         1618    .text.uart_it_receive  uart_it.o
-    0x080087ec   0x080087ec   0x00000004   PAD
-    0x080087f0   0x080087f0   0x00000090   Code   RO         1620    .text.uart_it_receive1  uart_it.o
-    0x08008880   0x08008880   0x0000001a   Code   RO         2379    x$fpl$fpinit        fz_wv.l(fpinit.o)
-    0x0800889a   0x0800889a   0x00000006   Data   RO         1458    .rodata..Lswitch.table.UART_SetConfig.5  stm32h7xx_hal_uart.o
-    0x080088a0   0x080088a0   0x00000006   Data   RO         1459    .rodata..Lswitch.table.UART_SetConfig.7  stm32h7xx_hal_uart.o
-    0x080088a6   0x080088a6   0x00000010   Data   RO         1513    .rodata.D1CorePrescTable  system_stm32h7xx.o
-    0x080088b6   0x080088b6   0x00000228   Data   RO         1555    .rodata.F6x8        oled.o
-    0x08008ade   0x08008ade   0x000005e0   Data   RO         1556    .rodata.F8X16       oled.o
-    0x080090be   0x080090be   0x00000018   Data   RO         1457    .rodata.UARTPrescTable  stm32h7xx_hal_uart.o
-    0x080090d6   0x080090d6   0x00000010   Data   RO         1500    .rodata.cst8        stm32h7xx_hal_uart_ex.o
-    0x080090e6   0x080090e6   0x00000002   PAD
-    0x080090e8   0x080090e8   0x00000020   Data   RO         2453    Region$$Table       anon$$obj.o
+    0x08007cb8   0x08007cb8   0x0000089e   Code   RO           15    .text.main          main.o
+    0x08008556   0x08008556   0x00000002   PAD
+    0x08008558   0x08008558   0x000001d8   Code   RO         1595    .text.motor_handle  motor.o
+    0x08008730   0x08008730   0x00000062   Code   RO         1585    .text.motor_init    motor.o
+    0x08008792   0x08008792   0x00000006   PAD
+    0x08008798   0x08008798   0x0000002e   Code   RO         1616    .text.uart_it_init  uart_it.o
+    0x080087c6   0x080087c6   0x00000002   PAD
+    0x080087c8   0x080087c8   0x00000074   Code   RO         1618    .text.uart_it_receive  uart_it.o
+    0x0800883c   0x0800883c   0x00000004   PAD
+    0x08008840   0x08008840   0x00000090   Code   RO         1620    .text.uart_it_receive1  uart_it.o
+    0x080088d0   0x080088d0   0x0000001a   Code   RO         2379    x$fpl$fpinit        fz_wv.l(fpinit.o)
+    0x080088ea   0x080088ea   0x00000006   Data   RO         1458    .rodata..Lswitch.table.UART_SetConfig.5  stm32h7xx_hal_uart.o
+    0x080088f0   0x080088f0   0x00000006   Data   RO         1459    .rodata..Lswitch.table.UART_SetConfig.7  stm32h7xx_hal_uart.o
+    0x080088f6   0x080088f6   0x00000010   Data   RO         1513    .rodata.D1CorePrescTable  system_stm32h7xx.o
+    0x08008906   0x08008906   0x00000228   Data   RO         1555    .rodata.F6x8        oled.o
+    0x08008b2e   0x08008b2e   0x000005e0   Data   RO         1556    .rodata.F8X16       oled.o
+    0x0800910e   0x0800910e   0x00000018   Data   RO         1457    .rodata.UARTPrescTable  stm32h7xx_hal_uart.o
+    0x08009126   0x08009126   0x00000010   Data   RO         1500    .rodata.cst8        stm32h7xx_hal_uart_ex.o
+    0x08009136   0x08009136   0x00000002   PAD
+    0x08009138   0x08009138   0x00000020   Data   RO         2453    Region$$Table       anon$$obj.o
 
 
-    Execution Region RW_IRAM1 (Exec base: 0x20000000, Load base: 0x08009108, Size: 0x00000000, Max: 0x00020000, ABSOLUTE)
+    Execution Region RW_IRAM1 (Exec base: 0x20000000, Load base: 0x08009158, Size: 0x00000000, Max: 0x00020000, ABSOLUTE)
 
     **** No section assigned to this execution region ****
 
 
-    Execution Region RW_IRAM2 (Exec base: 0x24000000, Load base: 0x08009108, Size: 0x00000b28, Max: 0x00080000, ABSOLUTE)
+    Execution Region RW_IRAM2 (Exec base: 0x24000000, Load base: 0x08009158, Size: 0x00000b28, Max: 0x00080000, ABSOLUTE)
 
     Exec Addr    Load Addr    Size         Type   Attr      Idx    E Section Name        Object
 
-    0x24000000   0x08009108   0x00000008   Data   RW          961    .data..L_MergedGlobals  stm32h7xx_hal.o
-    0x24000008   0x08009110   0x00000008   Data   RW         1514    .data..L_MergedGlobals  system_stm32h7xx.o
-    0x24000010   0x08009118   0x00000020   Data   RW         1606    .data..L_MergedGlobals  motor.o
-    0x24000030   0x08009138   0x0000001b   Data   RW         1558    .data.CMD_Data      oled.o
-    0x2400004b   0x08009153   0x00000001   Data   RW           27    .data.direction     main.o
-    0x2400004c   0x08009154   0x00000004   Data   RW         1575    .data.now           control.o
+    0x24000000   0x08009158   0x00000008   Data   RW          961    .data..L_MergedGlobals  stm32h7xx_hal.o
+    0x24000008   0x08009160   0x00000008   Data   RW         1514    .data..L_MergedGlobals  system_stm32h7xx.o
+    0x24000010   0x08009168   0x00000020   Data   RW         1606    .data..L_MergedGlobals  motor.o
+    0x24000030   0x08009188   0x0000001b   Data   RW         1558    .data.CMD_Data      oled.o
+    0x2400004b   0x080091a3   0x00000001   Data   RW           27    .data.direction     main.o
+    0x2400004c   0x080091a4   0x00000004   Data   RW         1575    .data.now           control.o
     0x24000050        -       0x00000060   Zero   RW         2105    .bss                c_w.l(libspace.o)
     0x240000b0        -       0x00000060   Zero   RW           49    .bss..L_MergedGlobals  main.o
     0x24000110        -       0x00000008   Zero   RW         1576    .bss..L_MergedGlobals  control.o
     0x24000118        -       0x00000006   Zero   RW         1622    .bss..L_MergedGlobals  uart_it.o
-    0x2400011e   0x08009158   0x00000002   PAD
+    0x2400011e   0x080091a8   0x00000002   PAD
     0x24000120        -       0x0000006c   Zero   RW         1607    .bss..L_MergedGlobals.1  motor.o
     0x2400018c        -       0x00000054   Zero   RW           75    .bss.hi2c2          i2c.o
     0x240001e0        -       0x00000054   Zero   RW           76    .bss.hi2c3          i2c.o
@@ -5710,37 +5712,37 @@ Image component sizes
 
       Code (inc. data)   RO Data    RW Data    ZI Data      Debug   Object Name
 
-       152         16          0          4         12       1625   control.o
-       348          0          0          0          0       3107   gpio.o
-       532          0          0          0        168       8496   i2c.o
-      3090          6          0          1         96      17360   main.o
-       990         24          0         32        108       8005   motor.o
-      2134          0       2056         27          0      13278   oled.o
-        64         26        664          0       1536        832   startup_stm32h750xx.o
-       268          0          0          8          4      14980   stm32h7xx_hal.o
-       354          0          0          0          0      12535   stm32h7xx_hal_cortex.o
-      2024          0          0          0          0      18174   stm32h7xx_hal_dma.o
-       446          0          0          0          0       6940   stm32h7xx_hal_gpio.o
-      1586          0          0          0          0      61285   stm32h7xx_hal_i2c.o
-       192          0          0          0          0       7565   stm32h7xx_hal_i2c_ex.o
-        32          0          0          0          0       2199   stm32h7xx_hal_msp.o
-        76          0          0          0          0      10596   stm32h7xx_hal_pwr_ex.o
-      2540         16          0          0          0      11709   stm32h7xx_hal_rcc.o
-      4094        146          0          0          0      20260   stm32h7xx_hal_rcc_ex.o
-      3590         22          0          0          0      64558   stm32h7xx_hal_tim.o
-       208          0          0          0          0      25358   stm32h7xx_hal_tim_ex.o
-      8012        332         36          0          0      43525   stm32h7xx_hal_uart.o
-       348          0         16          0          0      11569   stm32h7xx_hal_uart_ex.o
-        92          0          0          0          0       7046   stm32h7xx_it.o
-       204          0         16          8          0       5890   system_stm32h7xx.o
-       854          0          0          0        304      12885   tim.o
-       306          0          0          0          6       5175   uart_it.o
-       724          0          0          0        444      12064   usart.o
+       152         16          0          4         12       1632   control.o
+       348          0          0          0          0       3114   gpio.o
+       532          0          0          0        168       8503   i2c.o
+      3168          6          0          1         96      17348   main.o
+       990         24          0         32        108       8012   motor.o
+      2134          0       2056         27          0      13285   oled.o
+        64         26        664          0       1536        840   startup_stm32h750xx.o
+       268          0          0          8          4      14987   stm32h7xx_hal.o
+       354          0          0          0          0      12542   stm32h7xx_hal_cortex.o
+      2024          0          0          0          0      18181   stm32h7xx_hal_dma.o
+       446          0          0          0          0       6947   stm32h7xx_hal_gpio.o
+      1586          0          0          0          0      61292   stm32h7xx_hal_i2c.o
+       192          0          0          0          0       7572   stm32h7xx_hal_i2c_ex.o
+        32          0          0          0          0       2206   stm32h7xx_hal_msp.o
+        76          0          0          0          0      10603   stm32h7xx_hal_pwr_ex.o
+      2540         16          0          0          0      11716   stm32h7xx_hal_rcc.o
+      4094        146          0          0          0      20267   stm32h7xx_hal_rcc_ex.o
+      3590         22          0          0          0      64565   stm32h7xx_hal_tim.o
+       208          0          0          0          0      25365   stm32h7xx_hal_tim_ex.o
+      8012        332         36          0          0      43532   stm32h7xx_hal_uart.o
+       348          0         16          0          0      11576   stm32h7xx_hal_uart_ex.o
+        92          0          0          0          0       7053   stm32h7xx_it.o
+       204          0         16          8          0       5897   system_stm32h7xx.o
+       854          0          0          0        304      12892   tim.o
+       306          0          0          0          6       5182   uart_it.o
+       724          0          0          0        444      12071   usart.o
 
     ----------------------------------------------------------------------
-     33680        600       2822         80       2680     407016   Object Totals
+     33760        600       2822         80       2680     407180   Object Totals
          0          0         32          0          0          0   (incl. Generated)
-       420         12          2          0          2          0   (incl. Padding)
+       422         12          2          0          2          0   (incl. Padding)
 
     ----------------------------------------------------------------------
 
@@ -5791,15 +5793,15 @@ Image component sizes
 
       Code (inc. data)   RO Data    RW Data    ZI Data      Debug   
 
-     34306        616       2822         80       2776     407156   Grand Totals
-     34306        616       2822         80       2776     407156   ELF Image Totals
-     34306        616       2822         80          0          0   ROM Totals
+     34386        616       2822         80       2776     407320   Grand Totals
+     34386        616       2822         80       2776     407320   ELF Image Totals
+     34386        616       2822         80          0          0   ROM Totals
 
 ==============================================================================
 
-    Total RO  Size (Code + RO Data)                37128 (  36.26kB)
+    Total RO  Size (Code + RO Data)                37208 (  36.34kB)
     Total RW  Size (RW Data + ZI Data)              2856 (   2.79kB)
-    Total ROM Size (Code + RO Data + RW Data)      37208 (  36.34kB)
+    Total ROM Size (Code + RO Data + RW Data)      37288 (  36.41kB)
 
 ==============================================================================
 

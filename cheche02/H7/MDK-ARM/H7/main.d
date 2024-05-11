@@ -39,5 +39,5 @@ h7/main.o: ..\Src\main.c ..\Inc\main.h \
   ..\Inc\i2c.h ..\Inc\tim.h ..\Inc\usart.h ..\Inc\gpio.h ..\oled\oled.h \
   D:\tool\Kile\ARM\ARMCLANG\Bin\..\include\stdio.h \
   D:\tool\Kile\ARM\ARMCLANG\Bin\..\include\stdarg.h \
-  ..\MPU6050\MPU6050\mpu6050.h ..\MPU6050\MPU6050\eMPL\inv_mpu.h \
-  ..\user\motor.h ..\user\control.h ..\user\uart_it.h
+  ..\MPU6050\MPU6050\eMPL\inv_mpu.h ..\user\motor.h ..\user\control.h \
+  ..\user\uart_it.h

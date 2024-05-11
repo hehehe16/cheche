@@ -5,57 +5,30 @@ int width = 0;
 int location = 0;
 float err = 0;
 float last_err = 0;
-volatile int now = 100;
+volatile int now = 83;
 
-void line_pid(int expect, float *A, float *B)
+void line_pid(int expect, int zhuangtai)
 {
 
     float out = 0;
 
     last_err = err;
     err = now - expect;
-    out = 0.15 * err + 0.3 * (err - last_err);
-//		if(out>15)
-//		{
-//		out=15;
-//		}
-//		if(out<-15)
-//		{
-//		out=-15;
-//		}
-    Tv_A = exA + out;
-    Tv_B = exB - out;
-}
-
-uint8_t turn(char direction)
-{
+		if (zhuangtai==0)
+		{out = 0.1 * err + 0.9 * (err - last_err);
+			Tv_A = 80 + out;
+			Tv_B = 80 - out;
+		}
+		else
+		{
+			out = 0.25 * err + 3 * (err - last_err);
+			Tv_A = 40 + out;
+			Tv_B = 40 - out;
+		}
     
-    if (direction == 'R')
-    {
-        Tv_A = 40;
-        Tv_B = 0;
-    }
-    else if (direction == 'L')
-    {
-        Tv_A = 0;
-        Tv_B=40;
-    }
-
-    
-    return direction;
-
 }
 
-void line_pid_daozhe(int expect, float *A, float *B)
-{
 
-    float out = 0;
 
-    last_err = err;
-    err = now - expect;
-    out = 0.1 * err + 3 * (err - last_err);
 
-    Tv_A = exA - out;
-    Tv_B = exB + out;
-}
 

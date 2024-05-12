@@ -88,7 +88,7 @@ void sort(int b[],int a[],int len)    //排序算法 b:被排序对象  a：排序依据
 		}
 	}
 }
-
+uart_handle bt_uart;
 
 
 /* USER CODE END PTD */
@@ -182,21 +182,29 @@ int main(void)
 	HAL_TIM_Base_Start_IT(&htim4);
 	HAL_TIM_Base_Start_IT(&htim5);
 	int cnt=0;
+
+
 	
-	
-	uart_handle bt_uart =         //蓝牙串口对象定义，以及初始化
+	uart_handle bt_uart=         //蓝牙串口对象定义，以及初始化
 	{
-		.uart=huart2,
-		.print =&usart_printf,
-		.transmit =&uart_transmit
+	.receive_data = {0},
+	.uart=huart2,
+	.print =&usart_printf,
+	.transmit =&uart_transmit,
+	.receive =&uart_it_receive3
+
 	};
+
+	
+
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-		
+		bt_uart.print(&bt_uart,"aa\n");
 		if (state == 1)    //串口1接收完毕,等待处理
     {
       width =Date[0];
@@ -488,8 +496,11 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 	else if(huart == &huart6)
   {
 		uart_it_receive1(&huart6,Date1,&state1);
-		
   }
+	else if(huart == &huart2)
+	{
+		bt_uart.receive(&bt_uart);
+	}
 }
 
 

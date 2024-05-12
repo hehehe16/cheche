@@ -14,12 +14,12 @@ typedef struct uart_handle
 	
 	void (* transmit)(struct uart_handle *uart_handle, const uint8_t *pData, uint16_t Size, uint32_t Timeout);
 	void (* print)(struct uart_handle *uart_handle,char *format,...);
-	void (* receive)(struct uart_handle *uart_handle,uint8_t* Data,uint8_t* state);
-	
+	void (* receive)(struct uart_handle *uart_handle);
+
 	
 }uart_handle;
 
 void uart_transmit(uart_handle *uart_handle, const uint8_t *pData, uint16_t Size, uint32_t Timeout);
 void usart_printf(uart_handle *uart_handle,char *format,...);
-
+void uart_it_receive3(uart_handle *uart_handle);
 #endif

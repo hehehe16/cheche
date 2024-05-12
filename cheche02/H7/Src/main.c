@@ -54,7 +54,7 @@ hhh,hhhh,hhhhh,									//一次性变量用与使特定程序只执行一次
 zhongbingfangnum[2]={0},				//中间病房
 for_ru_num[4]={0},							//4数字位置
 moweibingfangnum[2]={0},					//终点病房数字位置
-zhuanwan[4]={0,0,'A','A'},
+zhuanwan[4]={0,0,0,0},
 back=0
 ;
 
@@ -254,6 +254,8 @@ int main(void)
 			}	
 			
 			//开始病房
+			if(back==0)
+			{
 				if (shuliang==1&&lukou==0)
 				{
 					if(T_num==1)
@@ -320,7 +322,8 @@ int main(void)
 					}
 					else
 						zhuanwan[3]=0;
-				}					
+				}
+				}				
 				number[0] = 0;
 				number[1] = 0;
 				number[2] = 0;
@@ -354,7 +357,7 @@ int main(void)
 		}
 		
 		
-		if(color==0&&width>60&&hhh==0&&(zhuangtai==0||zhuangtai==7))//岔路口检测函数
+		if(color==0&&width>=55&&hhh==0&&(zhuangtai==0||zhuangtai==7))//岔路口检测函数
 		{
 			set_jvli_A=z_A;
 			set_jvli_B=z_B;
@@ -365,7 +368,7 @@ int main(void)
 			zhuangtai=1;
 			hhh=1;//运行一次标志位
 		}
-		else if(color==0&&width<60&&(zhuangtai==0||zhuangtai==7))//标志位置0
+		else if(color==0&&width<55&&(zhuangtai==0||zhuangtai==7))//标志位置0
 		{
 			
 			
@@ -376,7 +379,7 @@ int main(void)
 		{
 			set_jvli_A=z_A;
 			set_jvli_B=z_B;
-			if(lukou!=0)
+			if(back==0)
 				zhuangtai=2;
 			else
 				zhuangtai=6;
@@ -550,7 +553,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 					get_T_distence(set_jvli_A+700,set_jvli_B+700+1670);
 					distence_A_pid();
 					distence_B_pid();
-					if(distence_A_er*distence_A_er<70&&distence_B_er*distence_B_er<70)	
+					if(distence_A_er*distence_A_er<200&&distence_B_er*distence_B_er<200)	
 						zhuangtai = 7;						
 					}
 					
@@ -563,7 +566,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 					get_T_distence(set_jvli_A+700+1670,set_jvli_B+700);
 					distence_A_pid();
 					distence_B_pid();
-					if(distence_A_er*distence_A_er<70&&distence_B_er*distence_B_er<70)	
+					if(distence_A_er*distence_A_er<200&&distence_B_er*distence_B_er<200)	
 						zhuangtai = 7;						
 					}
 					}
@@ -585,7 +588,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 					{
 						distence_A_pid();
 						distence_B_pid();
-						if(distence_A_er*distence_A_er<100&&distence_B_er*distence_B_er<100)	
+						if(distence_A_er*distence_A_er<200&&distence_B_er*distence_B_er<200)	
 						{
 							hhhh=0;
 						zhuangtai = 0;
@@ -608,7 +611,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 					{
 						distence_A_pid();
 						distence_B_pid();
-						if(distence_A_er*distence_A_er<100&&distence_B_er*distence_B_er<100)	
+						if(distence_A_er*distence_A_er<200&&distence_B_er*distence_B_er<200)	
 						{
 							hhhh=0;
 						zhuangtai = 0;
@@ -640,7 +643,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 				get_T_distence(set_jvli_A+1500,set_jvli_B+1500);
 				distence_B_pid();
 				distence_A_pid();
-				if(distence_A_er*distence_A_er<70&&distence_B_er*distence_B_er<70)
+				if(distence_A_er*distence_A_er<200&&distence_B_er*distence_B_er<200)
 					hhhh=2;
 				}
 				
@@ -649,7 +652,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 				get_T_distence(set_jvli_A+1500,set_jvli_B+1500-1670);
 				distence_B_pid();
 				distence_A_pid();
-				if(distence_A_er*distence_A_er<70&&distence_B_er*distence_B_er<70)
+				if(distence_A_er*distence_A_er<200&&distence_B_er*distence_B_er<200)
 					hhhh=3;
 				}
 				else if (hhhh==3)

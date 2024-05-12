@@ -89,26 +89,7 @@ void sort(int b[],int a[],int len)    //排序算法 b:被排序对象  a：排序依据
 	}
 }
 
-void usart_printf(char *format,...)
-{
-	int i =0;
-	char String[100];		 //定义输出字符串
-	va_list arg;			 //定义一个参数列表变量va_list是一个类型名，arg是变量名
-	va_start(arg,format);	 //从format位置开始接收参数表放在arg里面
-	
-	//sprintf打印位置是String，格式化字符串是format，参数表是arg，对于封装格式sprintf要改成vsprintf
-	vsprintf(String,format,arg);
-	va_end(arg);			 //释放参数表
-	while(1)
-	{
-		if(String[i] == 0)
-		{
-			return;
-		}
-		HAL_UART_Transmit(&huart2,(uint8_t *)&String[i], 1, 0xffff);
-		i++;
-	}	
-}
+
 
 /* USER CODE END PTD */
 
@@ -201,7 +182,14 @@ int main(void)
 	HAL_TIM_Base_Start_IT(&htim4);
 	HAL_TIM_Base_Start_IT(&htim5);
 	int cnt=0;
-
+	
+	
+	uart_handle bt_uart =         //蓝牙串口对象定义，以及初始化
+	{
+		.uart=huart2,
+		.print =&usart_printf,
+		.transmit =&uart_transmit
+	};
   /* USER CODE END 2 */
 
   /* Infinite loop */

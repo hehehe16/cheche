@@ -45,6 +45,9 @@ int number[4] = {0};
 uint8_t tick = 0;      
 int color =0; //当前胶带颜色 0red 1black 2wuse
 uint8_t T_num=0;
+
+uint8_t ques = 0;
+
 //*********************************************************
 
 //||||||||||||||||||||||||||||||||||||||||||||||||||||||||||//
@@ -183,18 +186,13 @@ int main(void)
 	HAL_TIM_Base_Start_IT(&htim5);
 	int cnt=0;
 
+	uart_handle_init(&bt_uart,&huart2);
 
 	
-	uart_handle bt_uart=         //蓝牙串口对象定义，以及初始化
-	{
-	.receive_data = {0},
-	.uart=huart2,
-	.print =&usart_printf,
-	.transmit =&uart_transmit,
-	.receive =&uart_it_receive3
 
-	};
 
+
+	
 	
 
 
@@ -204,7 +202,8 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-		bt_uart.print(&bt_uart,"aa\n");
+		//bt_uart.print(&bt_uart,"%d\n",bt_uart.receive_data[0]);
+		
 		if (state == 1)    //串口1接收完毕,等待处理
     {
       width =Date[0];
@@ -343,12 +342,18 @@ int main(void)
 		
 		while(zhuangtai==2&&HAL_GPIO_ReadPin(GPIOE,GPIO_PIN_3)==1)
 		{
+			
 		cnt++;
 		HAL_Delay(10);
 			if(cnt>150)
 			{
 			cnt=0;
 			zhuangtai=3;
+				if(ques == 1)
+				{
+					uint8_t zuyinuo[4] = {0x2c,0x12,0x03,0x5b};
+					bt_uart.transmit(&bt_uart,zuyinuo,4,0xff);
+				}				
 			}
 		}
 		
@@ -360,7 +365,17 @@ int main(void)
 			if(back==0)
 			lukou++;
 			else
-			lukou--;
+			{
+				if(lukou == 2&&ques == 1)
+				{
+					uint8_t hei1[4] = {0x2c,0x12,0x02,0x5b};
+					bt_uart.transmit(&bt_uart,hei1,4,0xff);
+				}
+				lukou--;
+			}
+			
+			
+
 			zhuangtai=1;
 			hhh=1;//运行一次标志位
 		}
@@ -376,7 +391,15 @@ int main(void)
 			set_jvli_A=z_A;
 			set_jvli_B=z_B;
 			if(back==0)
+			{
 				zhuangtai=2;
+				if(ques == 1)
+				{
+					uint8_t hei[4] = {0x2c,0x12,0x01,0x5b};
+					bt_uart.transmit(&bt_uart,hei,4,0xff);
+				}
+			}
+			
 			else
 				zhuangtai=6;
 			hhh=1;
@@ -625,6 +648,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 			
 			else if(zhuangtai==2||zhuangtai==6)//任务点停止状态|任务结束状态
 			{
+
 			get_T_distence(set_jvli_A,set_jvli_B);
 			distence_A_pid();
 			distence_B_pid();

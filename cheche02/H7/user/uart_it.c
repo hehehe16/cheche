@@ -22,6 +22,7 @@ void uart_it_init(void)
 {
 	HAL_UART_Receive_IT(&huart1,&com_date,1);//opmv
 	HAL_UART_Receive_IT(&huart6,&com_date1,1);//maix_cam
+	HAL_UART_Receive_IT(&huart2,&com_date2,1);
 }
 
 void uart_it_receive(UART_HandleTypeDef* huart,uint8_t* Data,uint8_t* state)
@@ -91,13 +92,13 @@ if (*state == 0) // state=0：处于等待接收或接收过程状�?? state=1:
 HAL_UART_Receive_IT(huart, &com_date1, 1);
 }
 
+
 void uart_it_receive3(uart_handle *uart_handle)
 {
-	UART_HandleTypeDef uart;
-	uart = uart_handle->uart;
 	uint8_t state  = 0;
-if(state == 0) // state=0：处于等待接收或接收过程状�?? state=1:处于接收完毕等待处理状�??
-{
+
+	
+
 
 	if (Rx_state2 == 0 && com_date2 == 0x2C)
 	{
@@ -121,8 +122,8 @@ if(state == 0) // state=0：处于等待接收或接收过程状�?? state=1:�
 			uart_handle->receive_data[Rx_counter2++] = com_date2;
 		}
 	}
-}
-HAL_UART_Receive_IT(&uart, &com_date2, 1);
+
+HAL_UART_Receive_IT(uart_handle->uart, &com_date2, 1);
 }
 
 
@@ -130,17 +131,16 @@ HAL_UART_Receive_IT(&uart, &com_date2, 1);
 void uart_transmit(uart_handle *uart_handle, const uint8_t *pData, uint16_t Size, uint32_t Timeout)
 {
 	UART_HandleTypeDef uart;
-	uart = uart_handle->uart;
 	
 	
-	HAL_UART_Transmit(&uart,pData, Size, Timeout);
+	HAL_UART_Transmit(uart_handle->uart,pData, Size, Timeout);
 }
 
 
-void usart_printf(uart_handle *uart_handle,char *format,...)
+void usart_printf(uart_handle *uart_handle,char *format,...)           //串口格式字符串输出
 {
-	UART_HandleTypeDef uart;
-	uart = uart_handle->uart;
+	
+
 	int i =0;
 	char String[100];		 //定义输出字符串
 	va_list arg;			 //定义一个参数列表变量va_list是一个类型名，arg是变量名
@@ -155,11 +155,19 @@ void usart_printf(uart_handle *uart_handle,char *format,...)
 		{
 			return;
 		}
-		HAL_UART_Transmit(&uart,(uint8_t *)&String[i], 1, 0xffff);
+		HAL_UART_Transmit(uart_handle->uart,(uint8_t *)&String[i], 1, 0xffff);
 		i++;
 	}	
 }
 
+uint8_t uart_handle_init(uart_handle (*uart_handle),UART_HandleTypeDef *huart)          //初始化串口结构体对象
+{
+	uart_handle->uart = huart;
+	uart_handle->print =&usart_printf;
+	uart_handle->transmit =&uart_transmit;
+	uart_handle->receive =&uart_it_receive3;	
+	return 0;
+}
 
 
 

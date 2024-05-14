@@ -91,9 +91,37 @@ void sort(int b[],int a[],int len)    //排序算法 b:被排序对象  a：排序依据
 		}
 	}
 }
+
+void set_state(Led_handle *Led_handle ,uint8_t state)
+{
+	HAL_GPIO_WritePin(Led_handle->GPIOx,Led_handle->GPIO_Pin,~state);
+}
+void led_on(Led_handle *Led_handle)
+{
+	HAL_GPIO_WritePin(Led_handle->GPIOx,Led_handle->GPIO_Pin,0);
+	Led_handle->state=1;
+}
+void led_off(Led_handle *Led_handle)
+{
+	HAL_GPIO_WritePin(Led_handle->GPIOx,Led_handle->GPIO_Pin,1);
+	Led_handle->state=0;
+}
+
+void led_handle_init(Led_handle *Led_handle,GPIO_TypeDef *GPIOx,uint16_t GPIO_Pin)
+{
+	Led_handle->GPIOx=GPIOx;
+	Led_handle->GPIO_Pin =GPIO_Pin;
+	Led_handle->off = &led_off;
+	Led_handle->on = &led_on;
+	Led_handle->set_state = &set_state;
+}
+
+
+
 uart_handle bt_uart;
-
-
+Led_handle LED1;
+Led_handle LED2;
+Led_handle LED3;
 /* USER CODE END PTD */
 
 /* Private define ------------------------------------------------------------*/
@@ -187,9 +215,12 @@ int main(void)
 	int cnt=0;
 
 	uart_handle_init(&bt_uart,&huart2);  //初始化串口结构体对象
+	led_handle_init(&LED1,GPIOE,GPIO_PIN_0);
 
-	
-
+	led_handle_init(&LED2,GPIOE,GPIO_PIN_1);
+	led_handle_init(&LED3,GPIOB,GPIO_PIN_9);
+	LED3.off=LED1.on;
+	LED3.on=LED1.off;
 
 
 	
@@ -202,8 +233,9 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-		//bt_uart.print(&bt_uart,"%d\n",bt_uart.receive_data[0]);
-		
+		LED1.off(&LED1);
+		LED2.off(&LED2);
+		LED3.off(&LED3);
 		if (state == 1)    //串口1接收完毕,等待处理
     {
       width =Date[0];

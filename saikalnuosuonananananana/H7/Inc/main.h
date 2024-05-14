@@ -31,6 +31,18 @@ extern "C" {
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+typedef struct Led_handle
+{
+	
+	uint8_t state;
+	GPIO_TypeDef *GPIOx;
+	uint16_t GPIO_Pin;
+	void (*set_state)(struct Led_handle *Led_handle ,uint8_t state);
+	void (*on)(struct Led_handle *Led_handle);
+	void (*off)(struct Led_handle *Led_handle);
+	
+}Led_handle;
+
 
 /* USER CODE END Includes */
 

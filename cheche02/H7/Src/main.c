@@ -55,7 +55,8 @@ zhongbingfangnum[2]={0},				//中间病房
 for_ru_num[4]={0},							//4数字位置
 moweibingfangnum[2]={0},					//终点病房数字位置
 zhuanwan[4]={0,0,0,0},
-back=0
+back=0,
+BL_RX[1]={0}
 ;
 
 
@@ -63,8 +64,9 @@ back=0
 int 
 lukou=0,				//路口变量lukou为当前第几次路口，zhuanwan[]为第几次路口时的运动方向，用于返回
 zhuangtai = -1,									//用于确定车的状态，-1初始位置停止，0去时巡线执行，1转弯，2病房处停止，3病房处转一圈，4回时巡线，5回时巡线转弯，6任务结束停止,7拐弯巡线
-set_jvli_A,set_jvli_B
+timu=0
 ;
+uint64_t set_jvli_A,set_jvli_B;
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -108,6 +110,27 @@ void usart_printf(char *format,...)
 		HAL_UART_Transmit(&huart2,(uint8_t *)&String[i], 1, 0xffff);
 		i++;
 	}	
+}
+void led(char ch)
+{
+	if(ch=='F')
+	{
+		HAL_GPIO_WritePin(GPIOB,GPIO_PIN_9,GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(GPIOE,GPIO_PIN_0,GPIO_PIN_SET);
+		HAL_GPIO_WritePin(GPIOE,GPIO_PIN_1,GPIO_PIN_SET);
+	}
+	else if(ch=='G')
+	{	HAL_GPIO_WritePin(GPIOB,GPIO_PIN_9,GPIO_PIN_SET);
+		HAL_GPIO_WritePin(GPIOE,GPIO_PIN_0,GPIO_PIN_SET);
+		HAL_GPIO_WritePin(GPIOE,GPIO_PIN_1,GPIO_PIN_SET);}
+	else if(ch=='Y')
+	{	HAL_GPIO_WritePin(GPIOB,GPIO_PIN_9,GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(GPIOE,GPIO_PIN_0,GPIO_PIN_SET);
+		HAL_GPIO_WritePin(GPIOE,GPIO_PIN_1,GPIO_PIN_RESET);}
+	else if(ch=='R')
+	{	HAL_GPIO_WritePin(GPIOB,GPIO_PIN_9,GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(GPIOE,GPIO_PIN_0,GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(GPIOE,GPIO_PIN_1,GPIO_PIN_SET);}
 }
 
 /* USER CODE END PTD */
@@ -184,6 +207,48 @@ int main(void)
   /* USER CODE BEGIN 2 */
 	OLED_Init();
 	OLED_FullyClear();
+	OLED_Set_Pos(1,1);
+	OLED_ShowChar(0,0,'T',16);
+	OLED_ShowChar(16,0,'T',16);
+	while(1)
+	{
+		if(HAL_GPIO_ReadPin(GPIOB,GPIO_PIN_2)==0)
+		{
+		timu++;
+		if(timu>3)
+		{
+		timu=0;
+		}
+		if(timu==0)
+		{
+		OLED_ShowChar(0,0,'T',16);
+		OLED_ShowChar(16,0,'T',16);
+		}
+		if(timu==1)
+		{
+		OLED_ShowChar(0,0,'F',16);
+		OLED_ShowChar(16,0,'1',16);
+		}	
+		if(timu==2)
+		{
+		OLED_ShowChar(0,0,'F',16);
+		OLED_ShowChar(16,0,'2',16);
+		}
+		if(timu==3)
+		{
+		OLED_ShowChar(0,0,'F',16);
+		OLED_ShowChar(16,0,'6',16);
+		}
+		HAL_Delay(300);
+		}
+		else if(HAL_GPIO_ReadPin(GPIOB,GPIO_PIN_0)==0)
+		{
+			OLED_FullyClear();
+			break;
+		}
+		HAL_Delay(1);
+	}
+	//init
 	HAL_TIM_Encoder_Start(&htim3,TIM_CHANNEL_1|TIM_CHANNEL_2);
 	HAL_TIM_Encoder_Start(&htim4,TIM_CHANNEL_1|TIM_CHANNEL_2);
 	HAL_TIM_PWM_Start(&htim2,TIM_CHANNEL_1);
@@ -195,17 +260,19 @@ int main(void)
 	for(i=0;i<10;i++)
 	{
   uart_it_init();
+	HAL_UART_Receive_IT(&huart2,BL_RX,1);
 	HAL_Delay(10);
 	}
 	HAL_TIM_Base_Start_IT(&htim3);
 	HAL_TIM_Base_Start_IT(&htim4);
 	HAL_TIM_Base_Start_IT(&htim5);
 	int cnt=0;
-
+	
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+	
   while (1)
   {
 		
@@ -353,11 +420,12 @@ int main(void)
 			{
 			cnt=0;
 			zhuangtai=3;
+				led('F');
 			}
 		}
 		
 		
-		if(color==0&&width>=55&&hhh==0&&(zhuangtai==0||zhuangtai==7))//岔路口检测函数
+		if(color==0&&width>=65&&hhh==0&&(zhuangtai==0||zhuangtai==7))//岔路口检测函数
 		{
 			set_jvli_A=z_A;
 			set_jvli_B=z_B;
@@ -368,7 +436,7 @@ int main(void)
 			zhuangtai=1;
 			hhh=1;//运行一次标志位
 		}
-		else if(color==0&&width<55&&(zhuangtai==0||zhuangtai==7))//标志位置0
+		else if(color==0&&width<65&&(zhuangtai==0||zhuangtai==7))//标志位置0
 		{
 			
 			
@@ -392,30 +460,27 @@ int main(void)
     /* USER CODE BEGIN 3 */
 
 		
-
-
-
 		
-
-		
-		
-		
-		
-		OLED_ShowStr1(0, 1,z_A, 6, 16);
-		OLED_ShowStr1(64, 1,z_B, 6, 16);
-		OLED_ShowStr1(0, 3,lukou, 1, 16);
-		OLED_ShowStr1(30, 3,T_num, 1, 16);
-		OLED_ShowStr1(60, 3,zhuangtai, 1, 16);
-		OLED_ShowStr1(90, 3, now, 3, 16);
+		//OLED
+		{
+		OLED_ShowChar(0,3,zhongbingfangnum[0]+'0',16);
+		OLED_ShowChar(16,3,zhongbingfangnum[1]+'0',16);
+		OLED_ShowChar(32,3,0,16);
+		OLED_ShowChar(48,3,for_ru_num[0]+'0',16);
+		OLED_ShowChar(64,3,for_ru_num[1]+'0',16);
+		OLED_ShowChar(80,3,for_ru_num[2]+'0',16);
+		OLED_ShowChar(96,3,for_ru_num[3]+'0',16);
 		OLED_ShowChar(0,5,zhuanwan[0],16);
 		OLED_ShowChar(17,5,zhuanwan[1],16);
 		OLED_ShowChar(34,5,zhuanwan[2],16);
 		OLED_ShowChar(51,5,zhuanwan[3],16);
-//		OLED_ShowStr1(0, 3, fork, 4, 16);
+		OLED_ShowStr1(78, 5,T_num, 1, 16);
+		OLED_ShowStr1(9, 0, zhuangtai, 1, 16);
+		OLED_ShowStr1(25, 0,now,3, 16);
+    OLED_ShowStr1(80,0,width, 3, 16);
+		}
+		//OLED
 		
-    
-	
-	
   }
 	
   /* USER CODE END 3 */
@@ -502,6 +567,11 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 		uart_it_receive1(&huart6,Date1,&state1);
 		
   }
+	else if(huart == &huart2)
+  {
+		
+		HAL_UART_Receive_IT(&huart2,BL_RX,1);	
+  }
 }
 
 
@@ -538,7 +608,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
       }
 			else if (zhuangtai == 0||zhuangtai==7)//巡线状态
       {
-					line_pid(83,zhuangtai);   		
+					line_pid(80,zhuangtai);   		
       }
 			else if(zhuangtai==1)//转弯状态相关
 			{
@@ -546,28 +616,31 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 				{
 					if(zhuanwan[lukou-1]=='A')
 					{
-						if(z_A<set_jvli_A+700 && z_B<set_jvli_B+700 ){line_pid(83,zhuangtai);}
-						
+						if(z_A<set_jvli_A+790 && z_B<set_jvli_B+790 ){line_pid(80,zhuangtai);}
 					else 
 					{
-					get_T_distence(set_jvli_A+700,set_jvli_B+700+1670);
+					get_T_distence(set_jvli_A+790,set_jvli_B+790+1670);
 					distence_A_pid();
 					distence_B_pid();
 					if(distence_A_er*distence_A_er<200&&distence_B_er*distence_B_er<200)	
-						zhuangtai = 7;						
+					{
+					zhuangtai=7;
+					}						
 					}
 					
 					}
 					else if(zhuanwan[lukou-1]=='B')
 					{
-					if(z_A<set_jvli_A+700 && z_B<set_jvli_B+700 ){line_pid(83,zhuangtai);}
+					if(z_A<set_jvli_A+790 && z_B<set_jvli_B+790 ){line_pid(80,zhuangtai);}
 					else 
 					{
-					get_T_distence(set_jvli_A+700+1670,set_jvli_B+700);
+					get_T_distence(set_jvli_A+790+1670,set_jvli_B+790);
 					distence_A_pid();
 					distence_B_pid();
 					if(distence_A_er*distence_A_er<200&&distence_B_er*distence_B_er<200)	
-						zhuangtai = 7;						
+					{
+					zhuangtai=7;
+					}						
 					}
 					}
 					else 
@@ -580,7 +653,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 						if(hhhh==0&&z_A<set_jvli_A+700 && z_B<set_jvli_B+700 )
 					{
 					get_T_distence(set_jvli_A+700+1670,set_jvli_B+700);
-					line_pid(83,zhuangtai);
+					line_pid(80,zhuangtai);
 					}
 					else
 						hhhh=1;
@@ -593,17 +666,14 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 							hhhh=0;
 						zhuangtai = 0;
 						}
+					}			
 					}
-									
-					}
-					
-					
 					else if(zhuanwan[lukou]=='B')
 					{
 					if(hhhh==0&&z_A<set_jvli_A+700 && z_B<set_jvli_B+700 )
 					{
 					get_T_distence(set_jvli_A+700,set_jvli_B+700+1670);
-					line_pid(83,zhuangtai);
+					line_pid(80,zhuangtai);
 					}
 					else
 						hhhh=1;
@@ -626,6 +696,14 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 			
 			else if(zhuangtai==2||zhuangtai==6)//任务点停止状态|任务结束状态
 			{
+			if(zhuangtai==2)
+			{
+			led('R');
+			}
+			if(zhuangtai==6)
+			{
+			led('G');
+			}
 			get_T_distence(set_jvli_A,set_jvli_B);
 			distence_A_pid();
 			distence_B_pid();

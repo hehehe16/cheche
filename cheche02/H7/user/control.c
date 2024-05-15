@@ -21,7 +21,7 @@ void line_pid(int expect, int zhuangtai)
 		}
 		else
 		{
-			out = 0.25 * err + 3 * (err - last_err);
+			out = 0.25 * err + 2 * (err - last_err);
 			Tv_A = 40 + out;
 			Tv_B = 40 - out;
 		}

@@ -28,8 +28,6 @@
 #include "oled.h"
 #include "stdio.h"
 #include <stdarg.h>
-//#include "mpu6050.h"
-#include "inv_mpu.h"
 #include "motor.h"
 #include "control.h"
 #include "uart_it.h"

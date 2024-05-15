@@ -38,6 +38,5 @@ h7/main.o: ..\Src\main.c ..\Inc\main.h \
   ..\Drivers\STM32H7xx_HAL_Driver\Inc\stm32h7xx_hal_uart_ex.h \
   ..\Inc\i2c.h ..\Inc\tim.h ..\Inc\usart.h ..\Inc\gpio.h ..\oled\oled.h \
   D:\tool\Kile\ARM\ARMCLANG\Bin\..\include\stdio.h \
-  D:\tool\Kile\ARM\ARMCLANG\Bin\..\include\stdarg.h \
-  ..\MPU6050\MPU6050\eMPL\inv_mpu.h ..\user\motor.h ..\user\control.h \
-  ..\user\uart_it.h
+  D:\tool\Kile\ARM\ARMCLANG\Bin\..\include\stdarg.h ..\user\motor.h \
+  ..\user\control.h ..\user\uart_it.h

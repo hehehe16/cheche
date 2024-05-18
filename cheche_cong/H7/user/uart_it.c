@@ -13,8 +13,9 @@ static uint8_t a=1;
 
 void uart_it_init(void)
 {
-	HAL_UART_Receive_IT(&huart1,&com_date,1);//opmv
+	HAL_UART_Receive_IT(&huart1,&com_date,1);	//opmv
 	HAL_UART_Receive_IT(&huart6,&com_date1,1);//maix_cam
+		//
 }
 
 void uart_it_receive(UART_HandleTypeDef* huart,uint8_t* Data,uint8_t* state)

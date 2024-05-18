@@ -15,15 +15,15 @@ void line_pid(int expect, int zhuangtai)
     last_err = err;
     err = now - expect;
 		if (zhuangtai==0)
-		{out = 0.1 * err + 0.9 * (err - last_err);
-			Tv_A = 80 + out;
-			Tv_B = 80 - out;
+		{out = 0.125 * err + 0.3 * (err - last_err);
+			Tv_A = 50 + out;
+			Tv_B = 50 - out;
 		}
 		else
 		{
-			out = 0.25 * err + 2 * (err - last_err);
-			Tv_A = 40 + out;
-			Tv_B = 40 - out;
+			out = 0.15 * err + 0.15 * (err - last_err);
+			Tv_A = 20 + out;
+			Tv_B = 20 - out;
 		}
     
 }

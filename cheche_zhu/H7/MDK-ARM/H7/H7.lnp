@@ -32,7 +32,7 @@
 "h7\control.o"
 "h7\motor.o"
 "h7\uart_it.o"
---strict --scatter "H7\H7.sct"
+--library_type=microlib --strict --scatter "H7\H7.sct"
 --summary_stderr --info summarysizes --map --load_addr_map_info --xref --callgraph --symbols
 --info sizes --info totals --info unused --info veneers
 --list "H7.map" -o H7\H7.axf
